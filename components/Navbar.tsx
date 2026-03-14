@@ -43,16 +43,6 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Contact", href: "/contact" },
 ];
 
-const Logo = () => (
-  <Link
-    href="/"
-    aria-label="Primeleed home"
-    className="flex items-center shrink-0 mr-auto"
-  >
-    <Image src="/logo.png" alt="Primeleed" width={160} height={40} priority />
-  </Link>
-);
-
 const ChevronIcon = ({ open }: { open: boolean }) => (
   <svg
     width="10"
@@ -73,61 +63,12 @@ const ChevronIcon = ({ open }: { open: boolean }) => (
   </svg>
 );
 
-const HamburgerIcon = () => (
-  <svg
-    width="20"
-    height="15"
-    viewBox="0 0 20 15"
-    fill="none"
-    aria-hidden="true"
-  >
-    <rect width="20" height="2" rx="1" fill="currentColor" />
-    <rect y="6.5" width="14" height="2" rx="1" fill="currentColor" />
-    <rect y="13" width="20" height="2" rx="1" fill="currentColor" />
-  </svg>
-);
-
-const SearchIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 18 18"
-    fill="none"
-    aria-hidden="true"
-  >
-    <circle cx="7.5" cy="7.5" r="5" stroke="currentColor" strokeWidth="1.9" />
-    <path
-      d="M11.5 11.5L16.5 16.5"
-      stroke="currentColor"
-      strokeWidth="1.9"
-      strokeLinecap="round"
-    />
-  </svg>
-);
-
-const CloseIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 18 18"
-    fill="none"
-    aria-hidden="true"
-  >
-    <path
-      d="M2 2L16 16M16 2L2 16"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-  </svg>
-);
-
 function Dropdown({ items, open }: { items: DropdownItem[]; open: boolean }) {
   return (
     <ul
       role="menu"
       aria-hidden={!open}
-      className={`absolute top-full left-0 min-w-50 bg-white border border-[#e6eaed] border-t-[3px] border-t-[#F5C400] rounded-b-lg shadow-lg list-none m-0 py-1 z-50 transition-all duration-150
+      className={`absolute top-full left-0 min-w-50 bg-white border border-[#e6eaed] border-t-[3px] border-t-[#F5C400] rounded-b-lg shadow-xl list-none m-0 py-1 z-50 transition-all duration-150
         ${open ? "opacity-100 visible translate-y-0 pointer-events-auto" : "opacity-0 invisible -translate-y-2 pointer-events-none"}`}
     >
       {items.map((item) => (
@@ -151,10 +92,29 @@ export default function Navbar() {
   const [openItem, setOpenItem] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileAccordion, setMobileAccordion] = useState<string | null>(null);
-  const leaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
-  );
+  const [visible, setVisible] = useState(true);
+  const leaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const navRef = useRef<HTMLElement>(null);
+  const lastScrollY = useRef(0);
+  const scrollTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useEffect(() => {
+    const handler = () => {
+      const current = window.scrollY;
+      const diff = current - lastScrollY.current;
+      if (current < 80) {
+        setVisible(true);
+      } else if (diff > 8) {
+        setVisible(false);
+        setOpenItem(null);
+      } else if (diff < -8) {
+        setVisible(true);
+      }
+      lastScrollY.current = current;
+    };
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -172,7 +132,6 @@ export default function Navbar() {
     const onResize = () => {
       if (window.innerWidth > 960) setMobileOpen(false);
     };
-
     document.addEventListener("mousedown", handler);
     document.addEventListener("keydown", onKey);
     window.addEventListener("resize", onResize);
@@ -183,7 +142,13 @@ export default function Navbar() {
     };
   }, []);
 
-  useEffect(() => () => clearTimeout(leaveTimer.current), []);
+  useEffect(
+    () => () => {
+      clearTimeout(leaveTimer.current);
+      clearTimeout(scrollTimer.current);
+    },
+    [],
+  );
 
   const enter = useCallback((label: string) => {
     clearTimeout(leaveTimer.current);
@@ -200,15 +165,29 @@ export default function Navbar() {
   return (
     <header
       ref={navRef}
-      className="sticky top-0 z-50 bg-white border-b border-[#e6eaed] shadow-[0_1px_10px_rgba(0,0,0,0.07)] font-sans"
+      className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#e6eaed] shadow-[0_1px_10px_rgba(0,0,0,0.07)] font-sans transition-transform duration-300"
+      style={{ transform: visible ? "translateY(0)" : "translateY(-100%)" }}
     >
-      <div className="max-w-7xl mx-auto px-7 h-22.5 flex items-center gap-8">
-        <Logo />
+      <div className="max-w-7xl mx-auto px-4 sm:px-7 h-[70px] flex items-center">
+        <Link
+          href="/"
+          aria-label="Primeleed home"
+          className="flex items-center shrink-0 mr-auto"
+        >
+          <Image
+            src="/logo.png"
+            alt="Primeleed"
+            width={150}
+            height={38}
+            priority
+            className="object-contain"
+          />
+        </Link>
 
         <ul
           role="menubar"
           aria-label="Main navigation"
-          className="hidden lg:flex items-stretch h-22.5 list-none m-0 p-0 ml-auto"
+          className="hidden lg:flex items-stretch h-[70px] list-none m-0 p-0 ml-auto"
         >
           {NAV_ITEMS.map((item) => {
             const active = isActive(item);
@@ -234,8 +213,8 @@ export default function Navbar() {
                       );
                     }
                   }}
-                  className={`inline-flex items-center gap-0.5 px-4 my-2 text-[14.5px] font-medium text-[#1a2e3b] no-underline whitespace-nowrap cursor-pointer border-none transition-colors duration-150
-  ${active || expanded ? "bg-[#F5C400]" : "hover:bg-[#F5C400]"}`}
+                  className={`inline-flex items-center gap-0.5 px-4 self-stretch h-full text-[14.5px] font-medium text-[#1a2e3b] no-underline whitespace-nowrap cursor-pointer border-none transition-colors duration-150
+                    ${active || expanded ? "bg-[#F5C400]" : "hover:bg-[#F5C400]"}`}
                 >
                   {item.label}
                   {item.children && <ChevronIcon open={expanded} />}
@@ -248,28 +227,91 @@ export default function Navbar() {
           })}
         </ul>
 
-        <div className="flex items-center gap-0.5  text-[#1a2e3b]">
+        <div className="flex items-center gap-1 lg:ml-2 text-[#1a2e3b]">
           <button
-            className="lg:hidden flex items-center justify-center w-9.5 h-9.5 border-none bg-transparent rounded-md cursor-pointer hover:bg-[#f0f3f5] transition-colors"
+            className="hidden lg:flex items-center justify-center w-9 h-9 border-none bg-transparent rounded-md cursor-pointer hover:bg-[#f0f3f5] transition-colors"
+            aria-label="Menu"
+          >
+            <svg
+              width="20"
+              height="15"
+              viewBox="0 0 20 15"
+              fill="none"
+              aria-hidden="true"
+            >
+              <rect width="20" height="2" rx="1" fill="currentColor" />
+              <rect y="6.5" width="14" height="2" rx="1" fill="currentColor" />
+              <rect y="13" width="20" height="2" rx="1" fill="currentColor" />
+            </svg>
+          </button>
+
+          <button
+            className="flex items-center justify-center w-9 h-9 border-none bg-transparent rounded-md cursor-pointer hover:bg-[#f0f3f5] transition-colors"
+            aria-label="Search"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle
+                cx="7.5"
+                cy="7.5"
+                r="5"
+                stroke="currentColor"
+                strokeWidth="1.9"
+              />
+              <path
+                d="M11.5 11.5L16.5 16.5"
+                stroke="currentColor"
+                strokeWidth="1.9"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+
+          <button
+            className="lg:hidden flex items-center justify-center w-9 h-9 border-none bg-transparent rounded-md cursor-pointer hover:bg-[#f0f3f5] transition-colors"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
           >
-            {mobileOpen ? <CloseIcon /> : <HamburgerIcon />}
-          </button>
-
-          <button
-            className="hidden lg:flex items-center justify-center w-9.5 h-9.5 border-none bg-transparent rounded-md cursor-pointer hover:bg-[#f0f3f5] transition-colors"
-            aria-label="Menu"
-          >
-            <HamburgerIcon />
-          </button>
-
-          <button
-            className="flex items-center justify-center w-9.5 h-9.5 border-none bg-transparent rounded-md cursor-pointer hover:bg-[#f0f3f5] transition-colors"
-            aria-label="Search"
-          >
-            <SearchIcon />
+            {mobileOpen ? (
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M2 2L16 16M16 2L2 16"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            ) : (
+              <svg
+                width="20"
+                height="15"
+                viewBox="0 0 20 15"
+                fill="none"
+                aria-hidden="true"
+              >
+                <rect width="20" height="2" rx="1" fill="currentColor" />
+                <rect
+                  y="6.5"
+                  width="14"
+                  height="2"
+                  rx="1"
+                  fill="currentColor"
+                />
+                <rect y="13" width="20" height="2" rx="1" fill="currentColor" />
+              </svg>
+            )}
           </button>
         </div>
       </div>
@@ -278,7 +320,7 @@ export default function Navbar() {
         id="pl-mobile-menu"
         aria-label="Mobile navigation"
         aria-hidden={!mobileOpen}
-        className="bg-white border-t border-[#e6eaed] grid transition-[grid-template-rows] duration-300 ease-in-out"
+        className="lg:hidden bg-white border-t border-[#e6eaed] grid transition-[grid-template-rows] duration-300 ease-in-out"
         style={{ gridTemplateRows: mobileOpen ? "1fr" : "0fr" }}
       >
         <div className="overflow-hidden">
@@ -296,8 +338,8 @@ export default function Navbar() {
                           v === item.label ? null : item.label,
                         )
                       }
-                      className={`flex items-center justify-between w-full px-6 py-3.5 text-[15px] font-medium text-[#1a2e3b] bg-transparent border-none cursor-pointer hover:bg-[#FFFBEC] transition-colors
-                        ${active ? "border-l-[3px] border-l-[#F5C400] bg-[#FFFBEC] pl-5.25" : ""}`}
+                      className={`flex items-center justify-between w-full px-6 py-4 text-[15px] font-medium text-[#1a2e3b] bg-transparent border-none cursor-pointer hover:bg-[#FFFBEC] transition-colors text-left
+                        ${active ? "border-l-4 border-l-[#F5C400] bg-[#FFFBEC] pl-5" : ""}`}
                     >
                       {item.label}
                       <ChevronIcon open={subOpen} />
@@ -311,7 +353,8 @@ export default function Navbar() {
                           <Link
                             key={child.href}
                             href={child.href}
-                            className="block px-9 py-3 text-[13.5px] text-[#3d5166] border-t border-[#eff1f4] hover:bg-[#FFF5C2] hover:text-[#1a2e3b] transition-colors"
+                            onClick={() => setMobileOpen(false)}
+                            className="block px-9 py-3.5 text-sm text-[#3d5166] border-t border-[#eff1f4] hover:bg-[#FFF5C2] hover:text-[#1a2e3b] transition-colors"
                           >
                             {child.label}
                           </Link>
@@ -323,8 +366,9 @@ export default function Navbar() {
                   <Link
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className={`flex px-6 py-3.5 text-[15px] font-medium text-[#1a2e3b] no-underline hover:bg-[#FFFBEC] transition-colors
-                      ${active ? "border-l-[3px] border-l-[#F5C400] bg-[#FFFBEC] pl-5.25" : ""}`}
+                    onClick={() => setMobileOpen(false)}
+                    className={`flex px-6 py-4 text-[15px] font-medium text-[#1a2e3b] no-underline hover:bg-[#FFFBEC] transition-colors
+                      ${active ? "border-l-4 border-l-[#F5C400] bg-[#FFFBEC] pl-5" : ""}`}
                   >
                     {item.label}
                   </Link>
