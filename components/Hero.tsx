@@ -6,8 +6,7 @@ export default function Hero() {
       className="relative w-full overflow-hidden"
       style={{
         minHeight: "500px",
-        backgroundImage:
-          "url('/university.png')",
+        backgroundImage: "url('/Home_img.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center center",
       }}

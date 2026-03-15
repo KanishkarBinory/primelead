@@ -5,7 +5,7 @@ import Button from "./Button";
 export default function CTABanner() {
   return (
     <section
-      className="w-full relative overflow-hidden"
+      className="w-full relative overflow-visible"
       style={{ backgroundColor: "#F5C400", minHeight: "340px" }}
     >
       <div
@@ -26,15 +26,15 @@ export default function CTABanner() {
         <div
           className="hidden md:block absolute"
           style={{
-            width: "260px",
-            height: "380px",
-            bottom: "0",
-            left: "50%",
+            width: "320px",
+            height: "480px",
+            bottom: "40%",
+            left: "60%",
             transform: "translateX(-50%)",
           }}
         >
           <Image
-            src="/student-cta.jpg"
+            src="/foot_girl.png"
             alt="Student studying"
             fill
             className="object-contain object-bottom"

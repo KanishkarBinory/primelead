@@ -22,12 +22,13 @@ export default function Home() {
       <LogoCarousel />
       <StatsSection />
       <FundingSupport />
+      <div className="h-20 bg-white" />
       <StudentFinance />
       <HowToApply />
       <ApplyToday />
       <AdmissionContent />
       <StudentLife />
-      <div className="h-40 bg-white" />
+      <div className="h-50 bg-white" />
       <CTABanner />
     </>
   );

@@ -38,14 +38,14 @@ export default function StudentLife() {
 
           {/* Student image — bottom aligned, contained within col */}
           <div
-            className="absolute bottom-0 left-0 right-0"
-            style={{ height: "78%" }}
+            className="absolute bottom-0"
+            style={{ height: "100%", left: "35%", right: "0%" }}
           >
             <Image
-              src="/funding-student.jpg"
+              src="/vetor.png"
               alt="Student"
               fill
-              className="object-cover object-top"
+              className="object-contain object-bottom"
             />
           </div>
         </div>
@@ -149,7 +149,7 @@ export default function StudentLife() {
         {/* ── Col 3: Full image ── */}
         <div className="relative flex-1" style={{ minHeight: "520px" }}>
           <Image
-            src="/funding-student.jpg"
+            src="/Sudent_lfe.jpg"
             alt="Students collaborating"
             fill
             className="object-cover object-center"

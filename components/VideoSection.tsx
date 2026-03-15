@@ -3,14 +3,12 @@
 const videos = [
   {
     id: "about",
-    src: "https://www.primeleed.com/wp-content/uploads/2024/01/ABOUT-PRIMELEED.mp4",
-    poster: "/campus.png",
+    src: "/ABOUT-PRIMELEED.mp4",
     duration: "00:59",
   },
   {
     id: "empower",
-    src: "https://www.primeleed.com/wp-content/uploads/2024/01/PRIMELEED-EMPOWER-PEOPLES-LIVES-THROUGH-EDUCATION.mp4",
-    poster: "/campus.png",
+    src: "/PRIMELEED-EMPOWER-PEOPLES-LIVES-THROUGH-EDUCATION.mp4",
     duration: "00:15",
   },
 ];
@@ -27,9 +25,8 @@ export default function VideoSection() {
           >
             <video
               src={video.src}
-              poster={video.poster}
               controls
-              preload="none"
+              preload="metadata"
               className="w-full h-full object-cover"
             />
           </div>

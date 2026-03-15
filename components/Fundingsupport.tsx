@@ -137,7 +137,7 @@ export default function FundingSupport() {
           {/* ── Right: Image — flush to right, no padding, fills height ── */}
           <div className="relative w-full md:w-[55%] min-h-100 md:min-h-0">
             <Image
-              src="/funding-student.jpg"
+              src="/Vission.jpeg"
               alt="Student applying for funding"
               fill
               className="object-cover object-center"

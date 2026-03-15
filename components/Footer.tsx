@@ -99,7 +99,7 @@ export default function Footer() {
             </a>
             <a
               href="mailto:info@primeleed.com"
-              className="flex items-center gap-2 hover:opacity-75 transition-opacity"
+              className="flex items-center gap-2 hover:opacity-75 transition-opacity font-semibold"
               style={{ fontSize: "14px", color: "#1a2e3b" }}
             >
               <svg

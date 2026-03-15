@@ -13,7 +13,7 @@ export default function VisionMission() {
         className="relative w-full overflow-hidden"
         style={{
           height: "540px",
-          backgroundImage: "url('/campus.png')",
+          backgroundImage: "url('/Vission.jpeg')",
           backgroundSize: "cover",
           backgroundPosition: "center center",
         }}
