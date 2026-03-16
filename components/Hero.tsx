@@ -21,7 +21,11 @@ export default function Hero() {
       >
         <h1
           className="text-white leading-tight mb-6 font-black"
-          style={{ fontSize: "clamp(28px, 5.5vw, 50px)", fontWeight: 900 }}
+          style={{
+            fontSize: "clamp(28px, 5.5vw, 50px)",
+            fontWeight: 900,
+            color: "#ffffff",
+          }}
         >
           Start your journey
           <br />

@@ -12,10 +12,9 @@ export default function Button({
   return (
     <Link
       href={href}
-      className="flex items-center w-75 px-8 py-6 text-white font-semibold text-base tracking-wide transition-colors duration-200 bg-[#1a2e3b] hover:bg-[#2ab4c0]"
+      className="flex items-center w-80 px-8 py-6 text-white font-semibold text-base tracking-wide transition-colors duration-200 bg-[#1a2e3b] hover:bg-[#2ab4c0]"
     >
-      {/* Spacer to push label to center */}
-      <span className="w-5 shrink-0" />
+
       {/* Label centered */}
       <span className="flex-1 text-left">{label}</span>
       {/* Arrow fixed to right */}

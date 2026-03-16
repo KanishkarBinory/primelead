@@ -2,7 +2,7 @@ import Hero from "@/components/Hero";
 import ReviewsCarousel from "@/components/Reviewscarousel";
 import AboutSection from "@/components/AboutSection";
 import VisionMission from "@/components/VisionMission";
-import LogoCarousel from "@/components/LogoCarousel";
+import LogoCarousel from "@/components/mainComponents/LogoCarousel";
 import StatsSection from "@/components/StatsSection";
 import FundingSupport from "@/components/Fundingsupport";
 import StudentFinance from "@/components/Studentfinacehome";
@@ -11,6 +11,7 @@ import ApplyToday from "@/components/Applytoday";
 import AdmissionContent from "@/components/Admission";
 import StudentLife from "@/components/Studenlife";
 import CTABanner from "@/components/Ctabanner";
+import CoreValues from "@/components/about/CoreValues";
 
 export default function Home() {
   return (
@@ -24,6 +25,7 @@ export default function Home() {
       <FundingSupport />
       <div className="h-20 bg-white" />
       <StudentFinance />
+      <CoreValues/>
       <ApplyToday />
       <AdmissionContent />
       <StudentLife />

@@ -42,9 +42,9 @@ export default function CTABanner() {
         </div>
 
         {/* Right: CTA buttons */}
-        <div className="flex-1 flex flex-col items-end gap-4 pb-12 md:pb-0">
+        <div className="flex-1 flex flex-col items-end gap-4 pb-12 md:pb-0 z-10">
           <div className="w-full max-w-[320px]">
-            <Button href="/admission/form" label="Application Form" />
+            <Button href="/admission/form" label="Application Form"  />
           </div>
 
           <div className="flex items-center gap-2 w-full max-w-[320px] justify-end">
