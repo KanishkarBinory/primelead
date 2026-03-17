@@ -24,9 +24,9 @@ export default function Postgraduate() {
         }
       />
       <StatHero
-        stat="45+"
-        title={<>undergraduate courses</>}
-        paragraph="You have the unique opportunity to pursue a diverse range of subjects by enrolling in courses offered by any of our esteemed partners. This allows you to create a personalised academic path that aligns with your passions and interests. Explore our extensive selection of 45+ undergraduate majors and programs, discover the wide array of undergraduate courses provided by our partner universities, and find inspiration in the examples showcased below. For additional options and information, please don’t hesitate to contact us"
+        stat="20+"
+        title={<>Partnership Graduate Programs</>}
+        paragraph="Take advantage of a special opportunity to explore a wide range of subjects through our esteemed partner universities. This enables you to tailor your academic journey according to your own passions and interests. Discover our extensive selection of over 34 graduate programs, explore the diverse array of graduate courses available at our partner universities, and find inspiration in the examples below. For more options and information, feel free to reach out to us."
       />
       <CoreValues />
       <CallToAction />
