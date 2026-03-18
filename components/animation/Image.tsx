@@ -1,0 +1,29 @@
+"use client";
+import Image from "next/image";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+
+type Props = {
+  src: string;
+  alt: string;
+  priority?: boolean;
+};
+
+export function AnimatedNextImage({ src, alt, priority = false }: Props) {
+  const { ref, animated } = useScrollAnimation(0.1);
+
+  return (
+    <div ref={ref as React.RefObject<HTMLDivElement>} className="absolute inset-0">
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        priority={priority}
+        className="object-cover object-center"
+        style={{
+          transform: animated ? "scale(1)" : "scale(1.15)",
+          transition: "transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        }}
+      />
+    </div>
+  );
+}
