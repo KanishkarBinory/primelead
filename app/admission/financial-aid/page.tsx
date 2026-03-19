@@ -3,7 +3,7 @@
 
 import FormOverlap from "@/components/FormOverlap";
 import CallToAction from "@/components/CallToAction";
-import PageHero from "@/components/admission/how-to-apply/htaHero";
+import PageHero from "@/components/admission/financial-aid/financialAidHero";
 
 export default function FinancialAidPage() {
   return (

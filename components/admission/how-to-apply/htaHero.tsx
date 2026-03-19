@@ -1,12 +1,18 @@
-// components/admission/AdmissionHero.tsx
-import PageHero from "@/components/PageHero";
+import MainHero from "@/components/mainComponents/Mainhero";
 
 export default function HowToApplyHero() {
   return (
-    <PageHero
+    <MainHero
+      imageSrc="https://images.unsplash.com/photo-1627556704302-624286467c65?w=1600&q=80"
+      imageAlt="Graduation ceremony"
       title="How to Apply"
-      imageSrc="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1600&q=80"
-      description="The admission team can offer guidance and support throughout the application process. They can help students navigate the application requirements, submit necessary documents, and meet deadlines. "
+      paragraph={
+        <>
+          The admission team can offer guidance and support throughout the
+          application process. They can help students navigate the application
+          requirements, submit necessary documents, and meet deadlines.{" "}
+        </>
+      }
     />
   );
 }

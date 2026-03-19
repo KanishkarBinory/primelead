@@ -53,7 +53,7 @@ export default function Footer() {
   return (
     <footer>
       {/* Yellow top bar */}
-      <div className="w-full h-2" style={{ backgroundColor: "#F5C400" }} />
+      {/* <div className="w-full h-2" style={{ backgroundColor: "#F5C400" }} /> */}
 
       {/* Main footer */}
       <div style={{ backgroundColor: "#eef0f2" }}>

@@ -1,8 +1,5 @@
-// components/mainComponents/GraduateAreas.tsx
-"use client";
-
 import Link from "next/link";
-import { useState } from "react";
+import { AnimateOnScroll } from "../animation/AnimateOnScroll";
 
 type AreaLink = {
   label: string;
@@ -23,13 +20,12 @@ export default function GraduateAreas({
     { label: "Undergraduate", href: "/academics/undergraduate" },
   ],
 }: Props) {
-  const [hovered, setHovered] = useState<string | null>(null);
-
   return (
     <section className="w-full pt-8 pb-16 md:pb-24 px-5 md:px-8">
+
       {/* Heading + paragraph — centered */}
       <div className="max-w-4xl mx-auto text-center mb-10">
-        <h2
+        <AnimateOnScroll delay="0s" as="h2"
           className="font-black mb-6"
           style={{
             fontFamily: "'Work Sans', sans-serif",
@@ -39,8 +35,9 @@ export default function GraduateAreas({
           }}
         >
           {title}
-        </h2>
-        <p
+        </AnimateOnScroll>
+
+        <AnimateOnScroll delay="0.2s" as="p"
           style={{
             fontFamily: "'Inter', sans-serif",
             fontSize: "clamp(14px, 1.2vw, 17px)",
@@ -49,50 +46,40 @@ export default function GraduateAreas({
           }}
         >
           {paragraph}
-        </p>
+        </AnimateOnScroll>
       </div>
 
-      {/* Links row — centered, no borders */}
-      <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-stretch justify-center gap-4 sm:gap-6">
-        {areas.map((area) => {
-          const isHovered = hovered === area.label;
-          const isAnyHovered = hovered !== null;
-
-          return (
+      {/* Links row — hover state stays, just wrapped in scroll animation */}
+      <AnimateOnScroll delay="0.4s">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-stretch justify-center gap-4 sm:gap-6">
+          {areas.map((area) => (
             <Link
               key={area.label}
               href={area.href}
-              onMouseEnter={() => setHovered(area.label)}
-              onMouseLeave={() => setHovered(null)}
-              className="relative flex items-center justify-center transition-all duration-300"
+              className="relative flex items-center justify-center transition-all duration-300 hover:bg-gray-100 group"
               style={{
                 width: "100%",
                 maxWidth: "340px",
                 minHeight: "160px",
-                backgroundColor: isHovered ? "#f3f4f6" : "transparent",
                 padding: "0 40px",
                 margin: "0 auto",
               }}
             >
               <span
-                className="font-black transition-all duration-300"
+                className="font-black transition-all duration-300 text-[#c0c0c0] group-hover:text-[#0d1b2a]"
                 style={{
                   fontFamily: "'Work Sans', sans-serif",
                   fontSize: "clamp(26px, 3vw, 40px)",
                   letterSpacing: "-0.5px",
-                  color: isHovered
-                    ? "#0d1b2a"
-                    : isAnyHovered
-                      ? "#c0c0c0"
-                      : "#c0c0c0",
                 }}
               >
                 {area.label}
               </span>
             </Link>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      </AnimateOnScroll>
+
     </section>
   );
 }

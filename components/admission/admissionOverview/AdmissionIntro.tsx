@@ -16,10 +16,10 @@ export default function AdmissionIntro() {
         <p
           style={{
             fontFamily: "'Inter', sans-serif",
-            fontSize: "18px",
-            fontWeight: "400",
-            lineHeight: "1.6em",
-            color: "#545454",
+            fontSize: "24px",
+            fontWeight: "900",
+            lineHeight: "1.3em",
+            color: "#000000",
             marginBottom: "24px",
           }}
         >
@@ -33,10 +33,10 @@ export default function AdmissionIntro() {
         <p
           style={{
             fontFamily: "'Inter', sans-serif",
-            fontSize: "18px",
-            fontWeight: "400",
-            lineHeight: "1.6em",
-            color: "#545454",
+            fontSize: "24px",
+            fontWeight: "900",
+            lineHeight: "1.3em",
+            color: "#000000",
           }}
         >
           We understand that the application process can be daunting, especially

@@ -154,16 +154,17 @@ export default function Navbar() {
                  transition-transform duration-300 font-sans"
       style={{ transform: visible ? "translateY(0)" : "translateY(-100%)" }}
     >
-      {/* Desktop */}
+      {/* ── Desktop — lg+ ── */}
       <div
-        className="hidden lg:flex items-center w-full px-10"
+        className="hidden lg:flex items-center justify-between w-full px-10"
         style={{ height: "100px" }}
       >
+        {/* Logo */}
         <Link
           href="/"
           aria-label="Primeleed home"
-          className="shrink-0 flex items-center bg-white"
-          style={{ height: "68px", padding: "0" }}
+          className="shrink-0 flex items-center"
+          style={{ height: "68px" }}
         >
           <Image
             src="/logo.png"
@@ -175,9 +176,8 @@ export default function Navbar() {
           />
         </Link>
 
-        <div style={{ minWidth: "800px" }} />
-
-        <nav aria-label="Main navigation">
+        {/* Nav items — centered with flex-1 */}
+        <nav aria-label="Main navigation" className="flex-1 flex justify-end">
           <ul
             role="menubar"
             className="flex items-center list-none m-0 p-0 gap-0"
@@ -205,8 +205,8 @@ export default function Navbar() {
                         setOpenItem((v) => v === item.label ? null : item.label);
                       }
                     }}
-                    className={`inline-flex items-center px-5 h-full
-                                text-[15px] font-bold text-[#1a2e3b]
+                    className={`inline-flex items-center px-4 xl:px-5 h-full
+                                text-[14px] xl:text-[15px] font-bold text-[#1a2e3b]
                                 no-underline whitespace-nowrap cursor-pointer
                                 transition-colors duration-150
                                 ${active || expanded ? "bg-[#F5C400]" : "hover:bg-[#F5C400]"}`}
@@ -221,7 +221,8 @@ export default function Navbar() {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-1 ml-4">
+        {/* Icons */}
+        <div className="flex items-center gap-1 ml-3">
           <button
             className="flex items-center justify-center w-10 h-10
                        bg-transparent border-none rounded cursor-pointer
@@ -248,7 +249,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile bar */}
+      {/* ── Mobile/Tablet bar — below lg ── */}
       <div
         className="flex lg:hidden items-center justify-between px-5"
         style={{ height: "68px" }}
@@ -300,7 +301,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* ── Mobile menu ── */}
       <nav
         id="pl-mobile-menu"
         aria-label="Mobile navigation"
