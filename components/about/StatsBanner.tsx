@@ -15,13 +15,13 @@ export default function StatsBanner() {
         <p
           style={{
             fontFamily: "'Work Sans', sans-serif",
-            fontSize: "clamp(80px, 15vw, 160px)", // responsive scaling
+            fontSize: "clamp(100px, 15vw, 200px)", // responsive scaling
             fontWeight: "800",
             color: "#292929", // exact --vamtam_h1_color
             lineHeight: "1em",
             marginBottom: "20px",
             marginLeft: "375px",
-            marginTop: "200px",
+            marginTop: "-170px",
           }}
         >
           97%

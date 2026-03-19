@@ -14,6 +14,7 @@ export default function AboutIntro() {
           gridTemplateColumns: "1fr 1fr",
           gap: "80px",
           marginTop: "70px",
+          marginBottom: "100px"
         }}
       >
         {/* Left — PrimeLeed logo, left aligned */}
@@ -41,7 +42,7 @@ export default function AboutIntro() {
             alignSelf: "flex-end",
             marginLeft: "80px",
             textAlign: "justify", // pushes the whole paragraph to the right
-            marginBottom: "80px"
+            marginBottom: "60px"
           }}
         >
           Our platform offers comprehensive support, including guidance on the

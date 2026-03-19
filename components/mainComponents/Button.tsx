@@ -1,39 +1,41 @@
+"use client";
+
 import Link from "next/link";
 
-type Props = {
-  href?: string;
-  label?: string;
-};
+interface ButtonProps {
+  href: string;
+  label: string;
+}
 
-export default function Button({
-  href = "/admission",
-  label = "Admission",
-}: Props) {
+export default function Button({ href, label }: ButtonProps) {
   return (
     <Link
       href={href}
-      className="flex items-center w-80 px-8 py-6 text-white font-semibold text-base tracking-wide transition-colors duration-200 bg-[#1a2e3b] hover:bg-[#2ab4c0]"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+        backgroundColor: "#292929",
+        color: "#ffffff",
+        padding: "14px 32px",
+        fontFamily: "'Work Sans', sans-serif",
+        fontSize: "16px",
+        fontWeight: "600",
+        textDecoration: "none",
+        letterSpacing: "0.02em",
+        transition: "background-color 0.2s ease",
+      }}
+      onMouseEnter={(e) => {
+        // When cursor enters, change background to the teal hover color
+        (e.currentTarget as HTMLElement).style.backgroundColor = "#2ab4c0";
+      }}
+      onMouseLeave={(e) => {
+        // When cursor leaves, restore the original dark background
+        (e.currentTarget as HTMLElement).style.backgroundColor = "#292929";
+      }}
     >
-
-      {/* Label centered */}
-      <span className="flex-1 text-left">{label}</span>
-      {/* Arrow fixed to right */}
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 20 20"
-        fill="none"
-        aria-hidden="true"
-        className="shrink-0"
-      >
-        <path
-          d="M4 10h12M11 5l5 5-5 5"
-          stroke="white"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      {label} →
     </Link>
   );
 }

@@ -2,7 +2,8 @@ import MainHero from "@/components/mainComponents/Mainhero";
 import StatHero from "@/components/mainComponents/StatHero";
 import LogoCarousel from "@/components/mainComponents/LogoCarousel";
 import GraduateAreas from "@/components/mainComponents/GraduateAreas";
-import CallToAction from "@/components/home/CallToAction";
+import FormOverlap from "@/components/FormOverlap";
+import CallToAction from "@/components/CallToAction";
 import ScatteredImages from "@/components/academics/ScatteredImages";
 
 export default function Overview() {
@@ -41,6 +42,7 @@ export default function Overview() {
           { src: "/Vission.jpeg", alt: "Vision" },
         ]}
       />
+      <FormOverlap />
       <CallToAction />
     </main>
   );
