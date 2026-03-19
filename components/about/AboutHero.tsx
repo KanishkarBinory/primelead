@@ -2,15 +2,22 @@
 // No longer contains any design code — just passes the About page's
 // specific content to the shared PageHero component.
 
-import PageHero from "@/components/PageHero";
+import MainHero from "@/components/mainComponents/Mainhero";
 
 export default function AboutHero() {
   return (
-    <PageHero
-      title="About"
-      imageSrc="https://images.unsplash.com/photo-1627556704302-624286467c65?w=1600&q=80"
-      strongText="Prime Leed is a trusted resource for students seeking to apply for higher education."
-      description="With a successful track record spanning over four years catering to both UK and EU students, we have assisted more than 2000 students in securing their places in higher education institutions."
-    />
+    <MainHero
+            imageSrc="https://images.unsplash.com/photo-1627556704302-624286467c65?w=1600&q=80"
+            imageAlt="Graduation ceremony"
+            title="Academics"
+            paragraph={
+              <>
+                Prime Leed offers an exceptional selection of courses by partnering
+                with esteemed universities accross the UK. Thorugh these
+                partnerships, we ensure access to high-quality educationa and a
+                diverse range of study programs.{" "}
+              </>
+            }
+          />
   );
 }

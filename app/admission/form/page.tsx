@@ -1,33 +1,14 @@
 // app/admission/form/page.tsx
 // Accessible at /admission/form from the Navbar dropdown.
 
-import CallToAction from "@/components/CallToAction";
+import PageHero from "@/components/admission/admissionForm/formHero";
 
 export default function AdmissionFormPage() {
   return (
     <main>
 
       {/* Page Hero */}
-      <section
-        style={{
-          minHeight: "320px",
-          backgroundColor: "#149AB5",
-          display: "flex",
-          alignItems: "flex-end",
-          padding: "60px 40px",
-        }}
-      >
-        <h1
-          style={{
-            fontFamily: "'Work Sans', sans-serif",
-            fontSize: "36px",
-            fontWeight: "800",
-            color: "#ffffff",
-          }}
-        >
-          Admission Form
-        </h1>
-      </section>
+      <PageHero />
 
       {/* Form Content */}
       <section className="bg-white" style={{ padding: "80px 20px" }}>
@@ -99,8 +80,6 @@ export default function AdmissionFormPage() {
           </div>
         </div>
       </section>
-
-      <CallToAction />
     </main>
   );
 }

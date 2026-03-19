@@ -1,38 +1,19 @@
 // app/admission/financial-aid/page.tsx
 // Accessible at /admission/financial-aid from the Navbar dropdown.
 
+import FormOverlap from "@/components/FormOverlap";
 import CallToAction from "@/components/CallToAction";
+import PageHero from "@/components/admission/how-to-apply/htaHero";
 
 export default function FinancialAidPage() {
   return (
     <main>
-
       {/* Page Hero */}
-      <section
-        style={{
-          minHeight: "320px",
-          backgroundColor: "#149AB5",
-          display: "flex",
-          alignItems: "flex-end",
-          padding: "60px 40px",
-        }}
-      >
-        <h1
-          style={{
-            fontFamily: "'Work Sans', sans-serif",
-            fontSize: "36px",
-            fontWeight: "800",
-            color: "#ffffff",
-          }}
-        >
-          Financial Aid
-        </h1>
-      </section>
+      <PageHero />
 
       {/* Page Content */}
       <section className="bg-white" style={{ padding: "80px 20px" }}>
         <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
-
           <h2
             style={{
               fontFamily: "'Work Sans', sans-serif",
@@ -61,7 +42,7 @@ export default function FinancialAidPage() {
           </p>
         </div>
       </section>
-
+      <FormOverlap />
       <CallToAction />
     </main>
   );

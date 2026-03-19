@@ -1,16 +1,24 @@
-import Hero from "@/components/Hero";
-import ReviewsCarousel from "@/components/Reviewscarousel";
-import AboutSection from "@/components/AboutSection";
-import VisionMission from "@/components/VisionMission";
-import LogoCarousel from "@/components/LogoCarousel";
-import StatsSection from "@/components/StatsSection";
-import FundingSupport from "@/components/Fundingsupport";
-import StudentFinance from "@/components/Studentfinacehome";
-import HowToApply from "@/components/Howtoapply";
-import ApplyToday from "@/components/Applytoday";
-import AdmissionContent from "@/components/Admission";
-import StudentLife from "@/components/Studenlife";
-import CTABanner from "@/components/Ctabanner";
+import Hero from "@/components/home/Hero";
+import ReviewsCarousel from "@/components/home/Reviewscarousel";
+import AboutSection from "@/components/home/AboutSection";
+import VisionMission from "@/components/home/VisionMission";
+import LogoCarousel from "@/components/mainComponents/LogoCarousel";
+import StatsSection from "@/components/home/StatsSection";
+import FundingSupport from "@/components/home/Fundingsupport";
+import StudentFinance from "@/components/home/Studentfinacehome";
+
+import ApplyToday from "@/components/home/Applytoday";
+import AdmissionContent from "@/components/home/Admission";
+import StudentLife from "@/components/home/Studenlife";
+import CTABanner from "@/components/home/Ctabanner";
+import CoreValues from "@/components/about/CoreValues";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Primeleed | Secure UK University Placement",
+  description:
+    "Prime Leed Have Assisted More Than 2,000 Students In Securing Their Higher Education Placements Throughout The UK.",
+};
 
 export default function Home() {
   return (
@@ -24,7 +32,7 @@ export default function Home() {
       <FundingSupport />
       <div className="h-20 bg-white" />
       <StudentFinance />
-      <HowToApply />
+      <CoreValues />
       <ApplyToday />
       <AdmissionContent />
       <StudentLife />

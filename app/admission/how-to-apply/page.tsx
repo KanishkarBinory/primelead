@@ -1,33 +1,15 @@
 // app/admission/how-to-apply/page.tsx
 // Accessible at /admission/how-to-apply from the Navbar dropdown.
 
+import FormOverlap from "@/components/FormOverlap";
 import CallToAction from "@/components/CallToAction";
+import PageHero from "@/components/admission/how-to-apply/htaHero";
 
 export default function HowToApplyPage() {
   return (
     <main>
-
       {/* Page Hero — same teal box pattern */}
-      <section
-        className="relative w-full"
-        style={{ minHeight: "320px", backgroundColor: "#149AB5" }}
-      >
-        <div
-          className="flex items-end"
-          style={{ minHeight: "320px", padding: "60px 40px" }}
-        >
-          <h1
-            style={{
-              fontFamily: "'Work Sans', sans-serif",
-              fontSize: "36px",
-              fontWeight: "800",
-              color: "#ffffff",
-            }}
-          >
-            How to Apply
-          </h1>
-        </div>
-      </section>
+      <PageHero />
 
       {/* Page Content */}
       <section className="bg-white" style={{ padding: "80px 20px" }}>
@@ -47,7 +29,7 @@ export default function HowToApplyPage() {
           </p>
         </div>
       </section>
-
+      <FormOverlap />
       <CallToAction />
     </main>
   );

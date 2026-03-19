@@ -1,17 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import Button from "./Button";
+import Button from "./mainComponents/Button";
 
 export default function CallToAction() {
   return (
     <section
       style={{
         backgroundColor: "#FFC501",
-        // The extra paddingTop creates room for the "FORM" text
-        // that overlaps down into this section from above.
-        // Without this, the heading text would sit on top of "FORM"
-        // and the two would collide visually.
         padding: "120px 20px 80px 20px",
         textAlign: "center",
       }}
