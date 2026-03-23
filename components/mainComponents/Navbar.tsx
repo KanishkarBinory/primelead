@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -43,40 +42,49 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Contact", href: "/contact" },
 ];
 
+const BLOG_POSTS = [
+  { title: "How to Organise Your Studies for Success", date: "December 29, 2020", href: "/blog/organise-studies" },
+  { title: "4th Workshop Advanced Materials", date: "December 29, 2020", href: "/blog/workshop-advanced-materials" },
+];
+
+const DIRECTORY_LINKS = [
+  { label: "News Directory", href: "/directory/news" },
+  { label: "Events Directory", href: "/directory/events" },
+  { label: "Faculty Directory", href: "/directory/faculty" },
+  { label: "Detailed Plans", href: "/directory/plans" },
+];
+
+const CTA_BUTTONS = [
+  { label: "Request Info", href: "/support/request-info" },
+  { label: "Visit", href: "/contact" },
+  { label: "Apply", href: "/admission/form" },
+];
+
 function ChevronIcon({ open }: { open: boolean }) {
   return (
     <svg
-      width="10"
-      height="6"
-      viewBox="0 0 10 6"
-      fill="none"
-      aria-hidden="true"
+      width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"
       className="ml-1 shrink-0 transition-transform duration-200"
       style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
     >
-      <path
-        d="M1 1L5 5L9 1"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-function Dropdown({ items, open }: { items: DropdownItem[]; open: boolean }) {
+// KEY FIX: Dropdown uses z-[200] to always beat the mega menu (z-[100])
+function Dropdown({ items, open, onClose }: { items: DropdownItem[]; open: boolean; onClose: () => void }) {
   return (
     <ul
       role="menu"
       aria-hidden={!open}
       className={`absolute top-full left-0 min-w-50 bg-white
                   border border-[#e6eaed] border-t-[3px] border-t-[#F5C400]
-                  shadow-lg list-none m-0 py-1 z-50 transition-all duration-150
-                  ${
-                    open
-                      ? "opacity-100 visible translate-y-0 pointer-events-auto"
-                      : "opacity-0 invisible -translate-y-2 pointer-events-none"
+                  shadow-lg list-none m-0 py-1 z-200
+                  transition-all duration-150
+                  ${open
+                    ? "opacity-100 visible translate-y-0 pointer-events-auto"
+                    : "opacity-0 invisible -translate-y-2 pointer-events-none"
                   }`}
     >
       {items.map((item) => (
@@ -85,6 +93,7 @@ function Dropdown({ items, open }: { items: DropdownItem[]; open: boolean }) {
             href={item.href}
             role="menuitem"
             tabIndex={open ? 0 : -1}
+            onClick={onClose}
             className="block px-5 py-3 text-[14px] font-semibold text-[#2c3e50]
                        border-b border-[#f3f5f7] last:border-0
                        hover:bg-[#FFFBEC] hover:pl-6 transition-all duration-100"
@@ -97,50 +106,127 @@ function Dropdown({ items, open }: { items: DropdownItem[]; open: boolean }) {
   );
 }
 
+// KEY FIX: Mega menu uses z-[100] (below dropdowns at z-[200])
+// Removed the blocking fixed overlay entirely — outside-click is handled by the
+// mousedown listener on document in the parent Navbar component.
+// Removed overflow:hidden toggle that was clipping visible dropdowns.
+function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
+  return (
+    <div
+      className="absolute top-full left-0 right-0 z-100 bg-white shadow-xl
+                 transition-all duration-300 ease-in-out"
+      style={{
+        maxHeight: open ? "700px" : "0px",
+        opacity: open ? 1 : 0,
+        overflow: "hidden",       // always hidden — dropdowns sit ABOVE this panel
+        pointerEvents: open ? "auto" : "none",
+      }}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0">
+        {/* Col 1 — Giving */}
+        <div className="p-10 border-r border-[#f0f3f5]">
+          <h3 className="font-black mb-6 text-[#1a2e3b] text-[20px]">Giving</h3>
+          <p className="text-[14px] text-[#4b5563] leading-relaxed mb-6">
+            All donations to the Student Emergency Fund will directly support our students as they adapt to changing circumstances.
+          </p>
+          <Link href="/giving" onClick={onClose} className="inline-flex items-center gap-2 text-[#2ab4c0] font-semibold text-[14px] hover:opacity-70 transition-opacity">
+            Visit Page →
+          </Link>
+        </div>
+
+        {/* Col 2 — Blog */}
+        <div className="p-10 border-r border-[#f0f3f5]">
+          <h3 className="font-black mb-6 text-[#1a2e3b] text-[20px]">Blog</h3>
+          <div className="flex flex-col gap-6">
+            {BLOG_POSTS.map((post, i) => (
+              <div key={i}>
+                <Link href={post.href} onClick={onClose} className="block text-[15px] font-semibold text-[#1a2e3b] hover:text-[#2ab4c0] transition-colors mb-1 leading-snug">
+                  {post.title}
+                </Link>
+                <p className="text-[13px] text-[#9ca3af]">{post.date}</p>
+                {i < BLOG_POSTS.length - 1 && <div className="border-b border-[#f0f3f5] mt-6" />}
+              </div>
+            ))}
+          </div>
+          <Link href="/blog" onClick={onClose} className="inline-flex items-center gap-2 text-[#2ab4c0] font-semibold text-[14px] hover:opacity-70 transition-opacity mt-8">
+            View Blog →
+          </Link>
+        </div>
+
+        {/* Col 3 — Directory */}
+        <div className="p-10 border-r border-[#f0f3f5]">
+          <h3 className="font-black mb-6 text-[#1a2e3b] text-[20px]">Directory</h3>
+          <div className="flex flex-col">
+            {DIRECTORY_LINKS.map((link, i) => (
+              <div key={i}>
+                <Link href={link.href} onClick={onClose} className="block py-4 text-[15px] font-semibold text-[#1a2e3b] hover:text-[#2ab4c0] transition-colors">
+                  {link.label}
+                </Link>
+                {i < DIRECTORY_LINKS.length - 1 && <div className="border-b border-[#f0f3f5]" />}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Col 4 — Alumni */}
+        <div className="relative p-10 overflow-hidden" style={{ backgroundColor: "#b8dce8", minHeight: "380px" }}>
+          <h3 className="font-black mb-4 text-[#1a2e3b] text-[20px]">Alumni</h3>
+          <div className="text-[#1a2e3b] font-black mb-3" style={{ fontSize: "36px", lineHeight: 1 }}>❝</div>
+          <p className="text-[14px] font-bold text-[#1a2e3b] leading-snug mb-4" style={{ maxWidth: "190px" }}>
+            Everything that I learned at Prime Leed really helped put me above the competition in the field of business management.
+          </p>
+          <p className="text-[13px] font-semibold text-[#1a2e3b] mb-0.5">Alyssa Watson</p>
+          <p className="text-[12px] text-[#4b5563] mb-6">BA Business Management</p>
+          <Link href="/alumni" onClick={onClose} className="inline-flex items-center gap-2 text-[#2ab4c0] font-semibold text-[14px] hover:opacity-70 transition-opacity">
+            Our Alumni →
+          </Link>
+          <div className="absolute bottom-0 right-0" style={{ width: "155px", height: "90%", maxHeight: "340px" }}>
+            <Image src="/funding-student.jpg" alt="Alumni student" fill className="object-cover object-top" />
+          </div>
+        </div>
+      </div>
+
+      {/* CTA row */}
+      <div className="bg-[#f0f2f4] border-t border-[#dde0e4] py-6 px-10 flex items-center justify-center gap-5">
+        {CTA_BUTTONS.map((btn) => (
+          <Link
+            key={btn.href}
+            href={btn.href}
+            onClick={onClose}
+            className="flex items-center justify-center bg-[#1a2e3b] text-white
+                       text-[15px] font-bold hover:bg-[#2ab4c0] transition-colors duration-200"
+            style={{ width: "220px", height: "54px" }}
+          >
+            {btn.label}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Navbar() {
   const pathname = usePathname();
   const [openItem, setOpenItem] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [megaOpen, setMegaOpen] = useState(false);
   const [mobileAccordion, setMobileAccordion] = useState<string | null>(null);
-  const [visible, setVisible] = useState(true);
 
-  const leaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
-  );
+  const leaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const navRef = useRef<HTMLElement>(null);
-  const lastScrollY = useRef(0);
-
-  useEffect(() => {
-    const onScroll = () => {
-      const curr = window.scrollY;
-      const diff = curr - lastScrollY.current;
-      if (curr < 80) setVisible(true);
-      else if (diff > 8) {
-        setVisible(false);
-        setOpenItem(null);
-      } else if (diff < -8) setVisible(true);
-      lastScrollY.current = curr;
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     const onMouse = (e: MouseEvent) => {
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
         setOpenItem(null);
         setMobileOpen(false);
+        setMegaOpen(false);
       }
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpenItem(null);
-        setMobileOpen(false);
-      }
+      if (e.key === "Escape") { setOpenItem(null); setMobileOpen(false); setMegaOpen(false); }
     };
-    const onResize = () => {
-      if (window.innerWidth >= 1024) setMobileOpen(false);
-    };
+    const onResize = () => { if (window.innerWidth >= 1024) setMobileOpen(false); };
     document.addEventListener("mousedown", onMouse);
     document.addEventListener("keydown", onKey);
     window.addEventListener("resize", onResize);
@@ -152,6 +238,12 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => () => clearTimeout(leaveTimer.current), []);
+
+  const closeAll = useCallback(() => {
+    setOpenItem(null);
+    setMegaOpen(false);
+    setMobileOpen(false);
+  }, []);
 
   const enter = useCallback((label: string) => {
     clearTimeout(leaveTimer.current);
@@ -168,48 +260,24 @@ export default function Navbar() {
   return (
     <header
       ref={navRef}
-      className="fixed top-0 left-0 right-0 z-50 bg-white
-                 border-b border-[#e6eaed]
-                 shadow-[0_2px_12px_rgba(0,0,0,0.08)]
-                 transition-transform duration-300 font-sans"
-      style={{ transform: visible ? "translateY(0)" : "translateY(-100%)" }}
+      className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#e6eaed] font-sans"
     >
-      {/* ── Desktop — lg+ ── */}
-      <div
-        className="hidden lg:flex items-center justify-between w-full px-10"
-        style={{ height: "100px" }}
-      >
-        {/* Logo */}
-        <Link
-          href="/"
-          aria-label="Primeleed home"
-          className="shrink-0 flex items-center"
-          style={{ height: "68px" }}
-        >
-          <Image
-            src="/logo.png"
-            alt="Primeleed"
-            width={170}
-            height={52}
-            priority
-            className="object-contain w-full h-full"
-          />
+      {/* ── Desktop bar ── */}
+      <div className="hidden lg:flex items-center justify-between w-full px-10 relative" style={{ height: "100px" }}>
+        <Link href="/" aria-label="Primeleed home" className="shrink-0 flex items-center" style={{ height: "68px" }}>
+          <Image src="/logo.png" alt="Primeleed" width={170} height={52} priority className="object-contain w-full h-full" />
         </Link>
 
-        {/* Nav items — centered with flex-1 */}
         <nav aria-label="Main navigation" className="flex-1 flex justify-end">
-          <ul
-            role="menubar"
-            className="flex items-center list-none m-0 p-0 gap-0"
-            style={{ height: "52px" }}
-          >
+          <ul role="menubar" className="flex items-center list-none m-0 p-0 gap-0" style={{ height: "52px" }}>
             {NAV_ITEMS.map((item) => {
               const active = isActive(item);
               const expanded = openItem === item.label;
               return (
                 <li
                   key={item.label}
-                  className="relative flex items-stretch h-full"
+                  // KEY FIX: when a dropdown is open, lift this li above the mega menu
+                  className={`relative flex items-stretch h-full ${expanded ? "z-200" : "z-auto"}`}
                   onMouseEnter={() => item.children && enter(item.label)}
                   onMouseLeave={() => item.children && leave()}
                 >
@@ -222,9 +290,9 @@ export default function Navbar() {
                     onClick={(e) => {
                       if (item.children) {
                         e.preventDefault();
-                        setOpenItem((v) =>
-                          v === item.label ? null : item.label,
-                        );
+                        setOpenItem((v) => v === item.label ? null : item.label);
+                      } else {
+                        closeAll();
                       }
                     }}
                     className={`inline-flex items-center px-4 xl:px-5 h-full
@@ -236,190 +304,85 @@ export default function Navbar() {
                     {item.label}
                     {item.children && <ChevronIcon open={expanded} />}
                   </Link>
-                  {item.children && (
-                    <Dropdown items={item.children} open={expanded} />
-                  )}
+                  {item.children && <Dropdown items={item.children} open={expanded} onClose={closeAll} />}
                 </li>
               );
             })}
           </ul>
         </nav>
 
-        {/* Icons */}
-        <div className="flex items-center gap-1 ml-3">
+        <div className="flex items-center gap-1 ml-3 z-200">
           <button
-            className="flex items-center justify-center w-10 h-10
-                       bg-transparent border-none rounded cursor-pointer
-                       text-[#1a2e3b] hover:bg-[#f0f3f5] transition-colors"
-            aria-label="Menu"
+            onClick={() => setMegaOpen((v) => !v)}
+            className="flex items-center justify-center w-10 h-10 bg-transparent
+                       border-none rounded cursor-pointer text-[#1a2e3b]
+                       hover:bg-[#f0f3f5] transition-colors"
+            aria-label="Open mega menu"
+            aria-expanded={megaOpen}
           >
-            <svg
-              width="22"
-              height="16"
-              viewBox="0 0 22 16"
-              fill="none"
-              aria-hidden="true"
-            >
-              <rect
-                y="0"
-                width="22"
-                height="2.2"
-                rx="1.1"
-                fill="currentColor"
-              />
-              <rect
-                y="7"
-                width="15"
-                height="2.2"
-                rx="1.1"
-                fill="currentColor"
-              />
-              <rect
-                y="14"
-                width="22"
-                height="2.2"
-                rx="1.1"
-                fill="currentColor"
-              />
-            </svg>
+            {megaOpen ? (
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M2 2L16 16M16 2L2 16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+              </svg>
+            ) : (
+              <svg width="22" height="16" viewBox="0 0 22 16" fill="none" aria-hidden="true">
+                <rect y="0" width="22" height="2.2" rx="1.1" fill="currentColor" />
+                <rect y="7" width="15" height="2.2" rx="1.1" fill="currentColor" />
+                <rect y="14" width="22" height="2.2" rx="1.1" fill="currentColor" />
+              </svg>
+            )}
           </button>
           <button
-            className="flex items-center justify-center w-10 h-10
-                       bg-transparent border-none rounded cursor-pointer
-                       text-[#1a2e3b] hover:bg-[#f0f3f5] transition-colors"
+            className="flex items-center justify-center w-10 h-10 bg-transparent
+                       border-none rounded cursor-pointer text-[#1a2e3b]
+                       hover:bg-[#f0f3f5] transition-colors"
             aria-label="Search"
           >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              aria-hidden="true"
-            >
-              <circle
-                cx="8.5"
-                cy="8.5"
-                r="5.5"
-                stroke="currentColor"
-                strokeWidth="2"
-              />
-              <path
-                d="M13 13L18 18"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" strokeWidth="2" />
+              <path d="M13 13L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
           </button>
         </div>
+
+        <MegaMenu open={megaOpen} onClose={closeAll} />
       </div>
 
-      {/* ── Mobile/Tablet bar — below lg ── */}
-      <div
-        className="flex lg:hidden items-center justify-between px-5"
-        style={{ height: "68px" }}
-      >
+      {/* ── Mobile bar ── */}
+      <div className="flex lg:hidden items-center justify-between px-5" style={{ height: "68px" }}>
         <Link href="/" aria-label="Primeleed home" className="shrink-0">
-          <Image
-            src="/logo.png"
-            alt="Primeleed"
-            width={130}
-            height={36}
-            priority
-            className="object-contain h-8 w-auto"
-          />
+          <Image src="/logo.png" alt="Primeleed" width={130} height={36} priority className="object-contain h-8 w-auto" />
         </Link>
-
         <div className="flex items-center gap-1 text-[#1a2e3b]">
-          <button
-            className="flex items-center justify-center w-9 h-9
-                       bg-transparent border-none rounded cursor-pointer
-                       hover:bg-[#f0f3f5] transition-colors"
-            aria-label="Search"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 20 20"
-              fill="none"
-              aria-hidden="true"
-            >
-              <circle
-                cx="8.5"
-                cy="8.5"
-                r="5.5"
-                stroke="currentColor"
-                strokeWidth="2"
-              />
-              <path
-                d="M13 13L18 18"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
+          <button className="flex items-center justify-center w-9 h-9 bg-transparent border-none rounded cursor-pointer hover:bg-[#f0f3f5] transition-colors" aria-label="Search">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" strokeWidth="2" />
+              <path d="M13 13L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
           </button>
           <button
-            className="flex items-center justify-center w-9 h-9
-                       bg-transparent border-none rounded cursor-pointer
-                       hover:bg-[#f0f3f5] transition-colors"
+            className="flex items-center justify-center w-9 h-9 bg-transparent border-none rounded cursor-pointer hover:bg-[#f0f3f5] transition-colors"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
           >
             {mobileOpen ? (
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M2 2L16 16M16 2L2 16"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                />
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M2 2L16 16M16 2L2 16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
               </svg>
             ) : (
-              <svg
-                width="22"
-                height="16"
-                viewBox="0 0 22 16"
-                fill="none"
-                aria-hidden="true"
-              >
-                <rect
-                  y="0"
-                  width="22"
-                  height="2.2"
-                  rx="1.1"
-                  fill="currentColor"
-                />
-                <rect
-                  y="7"
-                  width="15"
-                  height="2.2"
-                  rx="1.1"
-                  fill="currentColor"
-                />
-                <rect
-                  y="14"
-                  width="22"
-                  height="2.2"
-                  rx="1.1"
-                  fill="currentColor"
-                />
+              <svg width="22" height="16" viewBox="0 0 22 16" fill="none" aria-hidden="true">
+                <rect y="0" width="22" height="2.2" rx="1.1" fill="currentColor" />
+                <rect y="7" width="15" height="2.2" rx="1.1" fill="currentColor" />
+                <rect y="14" width="22" height="2.2" rx="1.1" fill="currentColor" />
               </svg>
             )}
           </button>
         </div>
       </div>
 
-      {/* ── Mobile menu ── */}
+      {/* ── Mobile nav menu ── */}
       <nav
-        id="pl-mobile-menu"
         aria-label="Mobile navigation"
         aria-hidden={!mobileOpen}
         className="lg:hidden bg-white border-t border-[#e6eaed]
@@ -436,15 +399,10 @@ export default function Navbar() {
                   <>
                     <button
                       aria-expanded={subOpen}
-                      onClick={() =>
-                        setMobileAccordion((v) =>
-                          v === item.label ? null : item.label,
-                        )
-                      }
-                      className={`flex items-center justify-between w-full
-                                  px-6 py-4 text-[15px] font-bold text-[#1a2e3b]
-                                  bg-transparent border-none cursor-pointer text-left
-                                  hover:bg-[#FFFBEC] transition-colors
+                      onClick={() => setMobileAccordion((v) => v === item.label ? null : item.label)}
+                      className={`flex items-center justify-between w-full px-6 py-4
+                                  text-[15px] font-bold text-[#1a2e3b] bg-transparent
+                                  border-none cursor-pointer text-left hover:bg-[#FFFBEC] transition-colors
                                   ${active ? "border-l-4 border-l-[#F5C400] bg-[#FFFBEC] pl-5" : ""}`}
                     >
                       {item.label}
@@ -460,10 +418,8 @@ export default function Navbar() {
                             key={child.href}
                             href={child.href}
                             onClick={() => setMobileOpen(false)}
-                            className="block px-9 py-4 text-[14px] font-semibold
-                                       text-[#3d5166] border-t border-[#eff1f4]
-                                       hover:bg-[#FFF5C2] hover:text-[#1a2e3b]
-                                       transition-colors"
+                            className="block px-9 py-4 text-[14px] font-semibold text-[#3d5166]
+                                       border-t border-[#eff1f4] hover:bg-[#FFF5C2] hover:text-[#1a2e3b] transition-colors"
                           >
                             {child.label}
                           </Link>
@@ -476,9 +432,8 @@ export default function Navbar() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     onClick={() => setMobileOpen(false)}
-                    className={`flex px-6 py-4 text-[15px] font-bold
-                                text-[#1a2e3b] no-underline
-                                hover:bg-[#FFFBEC] transition-colors
+                    className={`flex px-6 py-4 text-[15px] font-bold text-[#1a2e3b]
+                                no-underline hover:bg-[#FFFBEC] transition-colors
                                 ${active ? "border-l-4 border-l-[#F5C400] bg-[#FFFBEC] pl-5" : ""}`}
                   >
                     {item.label}
@@ -487,7 +442,20 @@ export default function Navbar() {
               </div>
             );
           })}
-          <div style={{ height: "12px" }} />
+
+          <div className="flex flex-col gap-3 px-6 py-6 bg-[#f0f2f4] border-t border-[#dde0e4]">
+            {CTA_BUTTONS.map((btn) => (
+              <Link
+                key={btn.href}
+                href={btn.href}
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-center bg-[#1a2e3b] text-white
+                           text-[15px] font-bold py-4 hover:bg-[#2ab4c0] transition-colors duration-200"
+              >
+                {btn.label}
+              </Link>
+            ))}
+          </div>
         </div>
       </nav>
     </header>
