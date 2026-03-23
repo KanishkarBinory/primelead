@@ -15,19 +15,19 @@ const NAV_ITEMS: NavItem[] = [
     label: "Academics",
     href: "/academics",
     children: [
-      { label: "Overview",      href: "/academics/overview" },
+      { label: "Overview", href: "/academics/overview" },
       { label: "Undergraduate", href: "/academics/undergraduate" },
-      { label: "Postgraduate",  href: "/academics/postgraduate" },
+      { label: "Postgraduate", href: "/academics/postgraduate" },
     ],
   },
   {
     label: "Admission",
     href: "/admission",
     children: [
-      { label: "Overview",       href: "/admission/overview" },
-      { label: "How to Apply",   href: "/admission/how-to-apply" },
+      { label: "Overview", href: "/admission/overview" },
+      { label: "How to Apply", href: "/admission/how-to-apply" },
       { label: "Admission Form", href: "/admission/form" },
-      { label: "Financial Aid",  href: "/admission/financial-aid" },
+      { label: "Financial Aid", href: "/admission/financial-aid" },
     ],
   },
   {
@@ -35,9 +35,9 @@ const NAV_ITEMS: NavItem[] = [
     href: "/support",
     children: [
       { label: "Request Information", href: "/support/request-info" },
-      { label: "FAQ",                 href: "/support/faq" },
-      { label: "Resources",           href: "/support/resources" },
-      { label: "Support & Guidance",  href: "/support/guidance" },
+      { label: "FAQ", href: "/support/faq" },
+      { label: "Resources", href: "/support/resources" },
+      { label: "Support & Guidance", href: "/support/guidance" },
     ],
   },
   { label: "Contact", href: "/contact" },
@@ -46,12 +46,21 @@ const NAV_ITEMS: NavItem[] = [
 function ChevronIcon({ open }: { open: boolean }) {
   return (
     <svg
-      width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"
+      width="10"
+      height="6"
+      viewBox="0 0 10 6"
+      fill="none"
+      aria-hidden="true"
       className="ml-1 shrink-0 transition-transform duration-200"
       style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
     >
-      <path d="M1 1L5 5L9 1" stroke="currentColor"
-            strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M1 1L5 5L9 1"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -64,9 +73,11 @@ function Dropdown({ items, open }: { items: DropdownItem[]; open: boolean }) {
       className={`absolute top-full left-0 min-w-50 bg-white
                   border border-[#e6eaed] border-t-[3px] border-t-[#F5C400]
                   shadow-lg list-none m-0 py-1 z-50 transition-all duration-150
-                  ${open
-                    ? "opacity-100 visible translate-y-0 pointer-events-auto"
-                    : "opacity-0 invisible -translate-y-2 pointer-events-none"}`}
+                  ${
+                    open
+                      ? "opacity-100 visible translate-y-0 pointer-events-auto"
+                      : "opacity-0 invisible -translate-y-2 pointer-events-none"
+                  }`}
     >
       {items.map((item) => (
         <li key={item.href} role="none">
@@ -88,22 +99,26 @@ function Dropdown({ items, open }: { items: DropdownItem[]; open: boolean }) {
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [openItem,        setOpenItem]        = useState<string | null>(null);
-  const [mobileOpen,      setMobileOpen]      = useState(false);
+  const [openItem, setOpenItem] = useState<string | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileAccordion, setMobileAccordion] = useState<string | null>(null);
-  const [visible,         setVisible]         = useState(true);
+  const [visible, setVisible] = useState(true);
 
-  const leaveTimer  = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const navRef      = useRef<HTMLElement>(null);
+  const leaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
+  const navRef = useRef<HTMLElement>(null);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
     const onScroll = () => {
       const curr = window.scrollY;
       const diff = curr - lastScrollY.current;
-      if (curr < 80)      setVisible(true);
-      else if (diff > 8)  { setVisible(false); setOpenItem(null); }
-      else if (diff < -8) setVisible(true);
+      if (curr < 80) setVisible(true);
+      else if (diff > 8) {
+        setVisible(false);
+        setOpenItem(null);
+      } else if (diff < -8) setVisible(true);
       lastScrollY.current = curr;
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -118,16 +133,21 @@ export default function Navbar() {
       }
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { setOpenItem(null); setMobileOpen(false); }
+      if (e.key === "Escape") {
+        setOpenItem(null);
+        setMobileOpen(false);
+      }
     };
-    const onResize = () => { if (window.innerWidth >= 1024) setMobileOpen(false); };
+    const onResize = () => {
+      if (window.innerWidth >= 1024) setMobileOpen(false);
+    };
     document.addEventListener("mousedown", onMouse);
-    document.addEventListener("keydown",   onKey);
-    window.addEventListener("resize",      onResize);
+    document.addEventListener("keydown", onKey);
+    window.addEventListener("resize", onResize);
     return () => {
       document.removeEventListener("mousedown", onMouse);
-      document.removeEventListener("keydown",   onKey);
-      window.removeEventListener("resize",      onResize);
+      document.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
@@ -184,7 +204,7 @@ export default function Navbar() {
             style={{ height: "52px" }}
           >
             {NAV_ITEMS.map((item) => {
-              const active   = isActive(item);
+              const active = isActive(item);
               const expanded = openItem === item.label;
               return (
                 <li
@@ -202,7 +222,9 @@ export default function Navbar() {
                     onClick={(e) => {
                       if (item.children) {
                         e.preventDefault();
-                        setOpenItem((v) => v === item.label ? null : item.label);
+                        setOpenItem((v) =>
+                          v === item.label ? null : item.label,
+                        );
                       }
                     }}
                     className={`inline-flex items-center px-4 xl:px-5 h-full
@@ -214,7 +236,9 @@ export default function Navbar() {
                     {item.label}
                     {item.children && <ChevronIcon open={expanded} />}
                   </Link>
-                  {item.children && <Dropdown items={item.children} open={expanded} />}
+                  {item.children && (
+                    <Dropdown items={item.children} open={expanded} />
+                  )}
                 </li>
               );
             })}
@@ -229,10 +253,34 @@ export default function Navbar() {
                        text-[#1a2e3b] hover:bg-[#f0f3f5] transition-colors"
             aria-label="Menu"
           >
-            <svg width="22" height="16" viewBox="0 0 22 16" fill="none" aria-hidden="true">
-              <rect y="0"  width="22" height="2.2" rx="1.1" fill="currentColor" />
-              <rect y="7"  width="15" height="2.2" rx="1.1" fill="currentColor" />
-              <rect y="14" width="22" height="2.2" rx="1.1" fill="currentColor" />
+            <svg
+              width="22"
+              height="16"
+              viewBox="0 0 22 16"
+              fill="none"
+              aria-hidden="true"
+            >
+              <rect
+                y="0"
+                width="22"
+                height="2.2"
+                rx="1.1"
+                fill="currentColor"
+              />
+              <rect
+                y="7"
+                width="15"
+                height="2.2"
+                rx="1.1"
+                fill="currentColor"
+              />
+              <rect
+                y="14"
+                width="22"
+                height="2.2"
+                rx="1.1"
+                fill="currentColor"
+              />
             </svg>
           </button>
           <button
@@ -241,9 +289,26 @@ export default function Navbar() {
                        text-[#1a2e3b] hover:bg-[#f0f3f5] transition-colors"
             aria-label="Search"
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" strokeWidth="2" />
-              <path d="M13 13L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle
+                cx="8.5"
+                cy="8.5"
+                r="5.5"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+              <path
+                d="M13 13L18 18"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
             </svg>
           </button>
         </div>
@@ -272,9 +337,26 @@ export default function Navbar() {
                        hover:bg-[#f0f3f5] transition-colors"
             aria-label="Search"
           >
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" strokeWidth="2" />
-              <path d="M13 13L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 20 20"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle
+                cx="8.5"
+                cy="8.5"
+                r="5.5"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+              <path
+                d="M13 13L18 18"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
             </svg>
           </button>
           <button
@@ -286,15 +368,49 @@ export default function Navbar() {
             onClick={() => setMobileOpen((v) => !v)}
           >
             {mobileOpen ? (
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                <path d="M2 2L16 16M16 2L2 16"
-                      stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M2 2L16 16M16 2L2 16"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                />
               </svg>
             ) : (
-              <svg width="22" height="16" viewBox="0 0 22 16" fill="none" aria-hidden="true">
-                <rect y="0"  width="22" height="2.2" rx="1.1" fill="currentColor" />
-                <rect y="7"  width="15" height="2.2" rx="1.1" fill="currentColor" />
-                <rect y="14" width="22" height="2.2" rx="1.1" fill="currentColor" />
+              <svg
+                width="22"
+                height="16"
+                viewBox="0 0 22 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <rect
+                  y="0"
+                  width="22"
+                  height="2.2"
+                  rx="1.1"
+                  fill="currentColor"
+                />
+                <rect
+                  y="7"
+                  width="15"
+                  height="2.2"
+                  rx="1.1"
+                  fill="currentColor"
+                />
+                <rect
+                  y="14"
+                  width="22"
+                  height="2.2"
+                  rx="1.1"
+                  fill="currentColor"
+                />
               </svg>
             )}
           </button>
@@ -312,7 +428,7 @@ export default function Navbar() {
       >
         <div className="overflow-hidden">
           {NAV_ITEMS.map((item) => {
-            const active  = isActive(item);
+            const active = isActive(item);
             const subOpen = mobileAccordion === item.label;
             return (
               <div key={item.label} className="border-b border-[#f0f3f5]">
@@ -321,7 +437,9 @@ export default function Navbar() {
                     <button
                       aria-expanded={subOpen}
                       onClick={() =>
-                        setMobileAccordion((v) => v === item.label ? null : item.label)
+                        setMobileAccordion((v) =>
+                          v === item.label ? null : item.label,
+                        )
                       }
                       className={`flex items-center justify-between w-full
                                   px-6 py-4 text-[15px] font-bold text-[#1a2e3b]

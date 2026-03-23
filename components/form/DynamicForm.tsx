@@ -54,9 +54,8 @@ const COURSE_OPTIONS = ALL_COURSES.map((c) => ({ value: c, label: c }));
 
 // ── Shared styles ──
 const inputClass =
-  "w-full px-4 py-3 bg-[#f3f4f6] border-none outline-none text-[#1a2e3b] text-sm focus:ring-2 focus:ring-[#149AB5] transition-all";
-
-const labelClass = "block text-sm font-semibold text-[#1a2e3b] mb-2";
+  "w-full px-4 py-4 bg-[#f3f4f6] border-none outline-none text-[#1a2e3b] text-base focus:ring-2 focus:ring-[#149AB5] transition-all";
+const labelClass = "block text-base font-semibold text-[#1a2e3b] mb-2";
 
 const selectStyles = {
   control: (base: object) => ({
@@ -64,48 +63,27 @@ const selectStyles = {
     backgroundColor: "#f3f4f6",
     border: "none",
     borderRadius: "0",
-    padding: "4px",
+    padding: "8px 4px", // ← increased from "4px"
     boxShadow: "none",
     "&:hover": { border: "none" },
   }),
-  indicatorSeparator: () => ({ display: "none" }),
-  placeholder: (base: object) => ({
-    ...base,
-    color: "#9ca3af",
-    fontSize: "14px",
-  }),
-  singleValue: (base: object) => ({
-    ...base,
-    color: "#1a2e3b",
-    fontSize: "14px",
-  }),
-  option: (
-    base: object,
-    state: { isSelected: boolean; isFocused: boolean },
-  ) => ({
-    ...base,
-    backgroundColor: state.isSelected
-      ? "#149AB5"
-      : state.isFocused
-        ? "#e0f7fa"
-        : "white",
-    color: state.isSelected ? "white" : "#1a2e3b",
-    fontSize: "14px",
-  }),
+  // ... rest unchanged
 };
 
 // ── Helpers ──
 function SectionTitle({ title }: { title: string }) {
   return (
-    <h2
-      className="font-black text-[#0d1b2a] mb-8"
+    <h1
+      className="font-black text-[#0d1b2a] mb-10"
       style={{
         fontFamily: "'Work Sans', sans-serif",
-        fontSize: "clamp(20px, 2.5vw, 28px)",
+        fontSize: "clamp(12px, 3vw, 24px)",
+        letterSpacing: "-1px",
+        lineHeight: 1.1,
       }}
     >
       {title}
-    </h2>
+    </h1>
   );
 }
 
@@ -227,7 +205,7 @@ export default function DynamicForm({
 
   return (
     <section className="w-full bg-white py-10 md:py-16">
-      <div className="max-w-5xl mx-auto px-5 md:px-8">
+      <div className="max-w-6xl mx-auto px-5 md:px-8">
         <form onSubmit={handleSubmit} noValidate>
           {sections.map((section, si) => (
             <div key={si} className="mb-12">
