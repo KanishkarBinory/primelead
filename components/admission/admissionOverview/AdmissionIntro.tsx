@@ -1,18 +1,18 @@
-// components/admission/AdmissionIntro.tsx
-// Two centered paragraphs of body text — white background, centered layout.
-// Max width 1000px matching the site-wide container width.
+// components/admission/admissionOverview/AdmissionIntro.tsx
+// Remove bottom padding — FactsImage sits flush below this section.
 
 export default function AdmissionIntro() {
   return (
     <section
       className="bg-white"
-      style={{ padding: "80px 20px" }}
+      style={{
+        padding: "80px 20px 0px 20px", // ← bottom padding = 0, image starts immediately
+      }}
     >
       <div
         className="mx-auto"
         style={{ maxWidth: "1000px", textAlign: "center" }}
       >
-        {/* First paragraph */}
         <p
           style={{
             fontFamily: "'Inter', sans-serif",
@@ -29,7 +29,6 @@ export default function AdmissionIntro() {
           your own distinct academic journey.
         </p>
 
-        {/* Second paragraph */}
         <p
           style={{
             fontFamily: "'Inter', sans-serif",
@@ -37,6 +36,7 @@ export default function AdmissionIntro() {
             fontWeight: "900",
             lineHeight: "1.3em",
             color: "#000000",
+            marginBottom: "60px", // space between text and image below
           }}
         >
           We understand that the application process can be daunting, especially

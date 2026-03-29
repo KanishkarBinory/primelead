@@ -1,24 +1,28 @@
-// components/admission/ApplySection.tsx
-// Two-column layout: text content on left, campus photo on right.
-// Same layout pattern as AboutMissionVision — text left, image right,
-// with the yellow (#FFC501) decorative square peeking from the corner.
+// components/admission/admissionOverview/ApplySection.tsx
+// Top padding removed — dark stats section ends, white starts immediately.
 
 import Link from "next/link";
 
 export default function ApplySection() {
   return (
-    <section className="bg-white" style={{ padding: "80px 20px" }}>
+    <section
+      className="bg-white"
+      style={{
+        padding: "80px 20px 80px 20px", // normal padding, no extra top needed
+        backgroundColor: "#ffffff",
+      }}
+    >
       <div
         className="mx-auto"
         style={{
-          maxWidth: "1000px",
+          maxWidth: "1200px",
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "80px",
           alignItems: "center",
         }}
       >
-        {/* Left column — text content */}
+        {/* Left — text */}
         <div>
           <h2
             style={{
@@ -51,7 +55,6 @@ export default function ApplySection() {
             right place for you.
           </p>
 
-          {/* "How To Apply" teal link — matches original */}
           <Link
             href="/how-to-apply"
             style={{
@@ -68,11 +71,8 @@ export default function ApplySection() {
           </Link>
         </div>
 
-        {/* Right column — photo with yellow accent block */}
-        <div
-          className="relative"
-          style={{ paddingBottom: "20px", paddingRight: "20px" }}
-        >
+        {/* Right — image + yellow accent */}
+        <div style={{ position: "relative", paddingBottom: "20px", paddingRight: "20px" }}>
           <img
             src="https://www.primeleed.com/wp-content/uploads/2020/12/wonderlane-6zlgM-GUd6I-unsplash-Copy-2.jpg"
             alt="University campus building"
@@ -83,8 +83,6 @@ export default function ApplySection() {
               display: "block",
             }}
           />
-
-          {/* Yellow decorative block — exact #FFC501 */}
           <div
             style={{
               position: "absolute",

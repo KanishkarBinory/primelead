@@ -1,18 +1,8 @@
-// components/admission/HowToApplyContent.tsx
-//
-// Matches primeleed.com/how-to-apply/ EXACTLY as seen in the screenshots:
-//
-// LAYOUT (single centered column, max-width ~820px):
-//   1. Intro paragraph (centered, bold, large)
-//   2. Requirements section — centered heading with document icon, centered subheading,
-//      centered requirement lines (each prefixed with –)
-//   3. Six numbered steps — number (left ~120px col) + title + description (right col)
-//   4. Application Form button (centered, dark background)
 "use client";
 
+import React, { useState } from "react";
 import Link from "next/link";
 
-// ── STEP DATA ──
 const steps = [
   {
     number: "01",
@@ -52,29 +42,184 @@ const steps = [
   },
 ];
 
-// ── REQUIREMENTS DATA ──
 const requirements = [
-  "Students who are 18 years and above at the start of the course are eligible to apply.",
-  "If English is not your first language, you will need to demonstrate English language proficiency equivalent to IELTS (Academic) 6.0 overall, with a minimum of 5.5 in each band and 6.0 in speaking.",
-  "All applicants are interviewed as part of the admissions process.",
-  "Applicants who do not meet the specified entry criteria may undergo individual consideration by the Academic Director. In such cases, evaluation will take into account relevant factors such as previous academic achievements, work experience, and life skills experience, as supported by evidence.",
+  {
+    emoji: "🎂",
+    number: "01",
+    title: "Age Eligibility",
+    tag: "Entry Criteria",
+    desc: "Students who are 18 years and above at the start of the course are eligible to apply for the programme.",
+  },
+  {
+    emoji: "🌐",
+    number: "02",
+    title: "English Proficiency",
+    tag: "Language Requirement",
+    desc: "Non-native English speakers must demonstrate IELTS (Academic) 6.0 overall, with a minimum of 5.5 in each band and 6.0 in speaking.",
+  },
+  {
+    emoji: "🗣️",
+    number: "03",
+    title: "Admissions Interview",
+    tag: "Selection Process",
+    desc: "All applicants are interviewed as a core part of the admissions process — no exceptions.",
+  },
+  {
+    emoji: "📋",
+    number: "04",
+    title: "Special Consideration",
+    tag: "Flexible Pathway",
+    desc: "Applicants not meeting standard criteria may be individually assessed by the Academic Director, considering academic history, work experience, and life skills.",
+  },
 ];
 
-// ── DOCUMENT ICON ──
-// Matches the "lined document" icon shown next to "Requirements" heading
-// in screenshots 1 & 2 — two horizontal lines inside a document shape.
+// ── Flip Card as its own component so useState is valid ──
+interface FlipCardProps {
+  emoji: string;
+  number: string;
+  title: string;
+  tag: string;
+  desc: string;
+}
+
+function FlipCard({ emoji, number, title, tag, desc }: FlipCardProps) {
+  const [flipped, setFlipped] = useState(false);
+
+  return (
+    <div
+      onClick={() => setFlipped(!flipped)}
+      style={{ cursor: "pointer", height: "220px", perspective: "900px" }}
+    >
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          height: "100%",
+          transformStyle: "preserve-3d",
+          transition: "transform 0.65s cubic-bezier(0.4,0.2,0.2,1)",
+          transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+        }}
+      >
+        {/* Front */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backfaceVisibility: "hidden",
+            background: "#fff",
+            border: "1px solid #e8e8e8",
+            borderRadius: "16px",
+            padding: "22px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontSize: "11px",
+                color: "#999",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                fontFamily: "'Work Sans', sans-serif",
+              }}
+            >
+              {number} / 04
+            </div>
+            <div style={{ fontSize: "38px", margin: "8px 0" }}>{emoji}</div>
+            <div
+              style={{
+                fontSize: "15px",
+                fontWeight: "600",
+                color: "#1a1a1a",
+                fontFamily: "'Work Sans', sans-serif",
+              }}
+            >
+              {title}
+            </div>
+          </div>
+          <div
+            style={{
+              fontSize: "11px",
+              color: "#aaa",
+              fontFamily: "'Inter', sans-serif",
+            }}
+          >
+            ↻ Tap to flip
+          </div>
+        </div>
+
+        {/* Back */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backfaceVisibility: "hidden",
+            transform: "rotateY(180deg)",
+            background: "#f8f8f8",
+            border: "1px solid #e8e8e8",
+            borderRadius: "16px",
+            padding: "22px",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "11px",
+              color: "#999",
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              fontFamily: "'Work Sans', sans-serif",
+            }}
+          >
+            Details
+          </div>
+          <p
+            style={{
+              fontSize: "13px",
+              color: "#444",
+              lineHeight: "1.7",
+              flex: 1,
+              margin: "10px 0",
+              fontFamily: "'Inter', sans-serif",
+            }}
+          >
+            {desc}
+          </p>
+          <span
+            style={{
+              display: "inline-block",
+              fontSize: "11px",
+              fontWeight: "600",
+              padding: "3px 10px",
+              borderRadius: "20px",
+              background: "#e8f4ff",
+              color: "#1a6fc4",
+              fontFamily: "'Inter', sans-serif",
+              alignSelf: "flex-start",
+            }}
+          >
+            {tag}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function DocumentIcon() {
   return (
     <svg
-      width="32"
-      height="36"
+      width="36"
+      height="40"
       viewBox="0 0 32 36"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       style={{ display: "inline-block", verticalAlign: "middle" }}
     >
-      {/* Document outline */}
       <rect
         x="1.5"
         y="1.5"
@@ -85,7 +230,6 @@ function DocumentIcon() {
         strokeWidth="2"
         fill="none"
       />
-      {/* Three horizontal lines representing text */}
       <line x1="7" y1="11" x2="25" y2="11" stroke="#333" strokeWidth="2" strokeLinecap="round" />
       <line x1="7" y1="17" x2="25" y2="17" stroke="#333" strokeWidth="2" strokeLinecap="round" />
       <line x1="7" y1="23" x2="19" y2="23" stroke="#333" strokeWidth="2" strokeLinecap="round" />
@@ -98,57 +242,49 @@ export default function HowToApplyContent() {
     <section
       style={{
         backgroundColor: "#ffffff",
-        paddingTop: "60px",
-        paddingBottom: "80px",
-        paddingLeft: "20px",
-        paddingRight: "20px",
+        paddingTop: "80px",
+        paddingBottom: "100px",
+        paddingLeft: "60px",
+        paddingRight: "60px",
       }}
     >
-      {/* ── OUTER WRAPPER — centered, max 820px ── */}
-      <div style={{ maxWidth: "820px", margin: "0 auto" }}>
+      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
 
-        {/* ══════════════════════════════════════
-            INTRO PARAGRAPH
-            Centered, bold, large — matches screenshot 2 top text
-            ══════════════════════════════════════ */}
+        {/* ── INTRO PARAGRAPH ── */}
         <p
           style={{
             fontFamily: "'Work Sans', sans-serif",
-            fontSize: "20px",
+            fontSize: "24px",
             fontWeight: "700",
             color: "#1a1a1a",
-            lineHeight: "1.6",
-            textAlign: "center",
-            marginBottom: "60px",
+            lineHeight: "1.7",
+            textAlign: "justify",
+            marginBottom: "70px",
           }}
         >
           To ensure you are well-prepared when filling out the application
-          online, we have provided a comprehensive list of all the things
-          that will be covered throughout the application. This will help
-          you anticipate and navigate through the application process with ease.
+          online, we have provided a comprehensive list of all the things that
+          will be covered throughout the application. This will help you
+          anticipate and navigate through the application process with ease.
         </p>
 
-        {/* ══════════════════════════════════════
-            REQUIREMENTS SECTION
-            Centered document icon + "Requirements" heading
-            Centered subheading + centered requirement lines
-            ══════════════════════════════════════ */}
-        <div style={{ textAlign: "center", marginBottom: "70px" }}>
+        {/* ── REQUIREMENTS SECTION ── */}
+        <div style={{ textAlign: "center", marginBottom: "80px" }}>
 
-          {/* Heading: icon + "Requirements" side by side, centered */}
+          {/* Icon + Heading */}
           <div
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: "14px",
-              marginBottom: "28px",
+              gap: "16px",
+              marginBottom: "32px",
             }}
           >
             <DocumentIcon />
             <h2
               style={{
                 fontFamily: "'Work Sans', sans-serif",
-                fontSize: "38px",
+                fontSize: "48px",
                 fontWeight: "800",
                 color: "#1a1a1a",
                 margin: 0,
@@ -163,69 +299,59 @@ export default function HowToApplyContent() {
           <h3
             style={{
               fontFamily: "'Work Sans', sans-serif",
-              fontSize: "16px",
+              fontSize: "18px",
               fontWeight: "700",
               color: "#1a1a1a",
-              marginBottom: "28px",
+              marginBottom: "32px",
               marginTop: 0,
             }}
           >
             Undergraduate &amp; Graduate Diploma Requirements:
           </h3>
 
-          {/* Requirements list — centered, each line prefixed with – */}
+          {/* Requirements grid — flip cards */}
           <div
             style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "16px",
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: "20px",
             }}
           >
-            {requirements.map((req, i) => (
-              <p
-                key={i}
-                style={{
-                  fontFamily: "'Work Sans', sans-serif",
-                  fontSize: "15px",
-                  color: "#333333",
-                  lineHeight: "1.7",
-                  margin: 0,
-                  textAlign: "center",
-                }}
-              >
-                – {req}
-              </p>
+            {requirements.map((req) => (
+              <FlipCard
+                key={req.number}
+                emoji={req.emoji}
+                number={req.number}
+                title={req.title}
+                tag={req.tag}
+                desc={req.desc}
+              />
             ))}
           </div>
         </div>
 
-        {/* ══════════════════════════════════════
-            SIX NUMBERED STEPS
-            Each row: large bold number (fixed ~90px) | title + description
-            Separated by subtle top borders (except first)
-            ══════════════════════════════════════ */}
+        {/* ── SIX NUMBERED STEPS ── */}
         <div>
           {steps.map((step, index) => (
             <div
               key={step.number}
               style={{
                 display: "grid",
-                // Number column ~90px, content fills the rest
-                gridTemplateColumns: "90px 1fr",
-                gap: "20px",
+                gridTemplateColumns: "120px 1fr",
+                gap: "32px",
                 alignItems: "start",
-                paddingTop: index === 0 ? "0" : "40px",
-                paddingBottom: "40px",
-                borderTop: index > 0 ? "1px solid #e0e0e0" : "none",
+                paddingTop: index === 0 ? "0" : "48px",
+                paddingBottom: "48px",
+                borderTop: index > 0 ? "1px solid #000000" : "none",
               }}
             >
-              {/* Step number — large, bold, dark, matches screenshot font exactly */}
+              {/* Step number */}
               <div
                 style={{
                   fontFamily: "'Work Sans', sans-serif",
-                  fontSize: "32px",
+                  fontSize: "27px",
                   fontWeight: "800",
-                  color: "#1a1a1a",
+                  color: "#000000",
                   lineHeight: "1",
                   paddingTop: "2px",
                 }}
@@ -238,10 +364,10 @@ export default function HowToApplyContent() {
                 <h3
                   style={{
                     fontFamily: "'Work Sans', sans-serif",
-                    fontSize: "18px",
-                    fontWeight: "700",
-                    color: "#1a1a1a",
-                    margin: "0 0 10px 0",
+                    fontSize: "25px",
+                    fontWeight: "900",
+                    color: "#000000",
+                    margin: "0 0 12px 0",
                     lineHeight: "1.3",
                   }}
                 >
@@ -249,10 +375,10 @@ export default function HowToApplyContent() {
                 </h3>
                 <p
                   style={{
-                    fontFamily: "'Work Sans', sans-serif",
-                    fontSize: "15px",
-                    color: "#444444",
-                    lineHeight: "1.75",
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: "17px",
+                    color: "#000000",
+                    lineHeight: "1.8",
                     margin: 0,
                   }}
                 >
@@ -262,62 +388,8 @@ export default function HowToApplyContent() {
             </div>
           ))}
 
-          {/* Final border line after last step */}
-          <div style={{ borderTop: "1px solid #e0e0e0" }} />
-        </div>
-
-        {/* ══════════════════════════════════════
-            APPLICATION FORM BUTTON
-            Centered, dark background, arrow icon
-            Matches screenshot 4 bottom button exactly
-            ══════════════════════════════════════ */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "48px",
-          }}
-        >
-          <Link
-            href="/admission/admission-form"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "16px",
-              backgroundColor: "#1a1a1a",
-              color: "#ffffff",
-              fontFamily: "'Work Sans', sans-serif",
-              fontSize: "15px",
-              fontWeight: "600",
-              letterSpacing: "0.03em",
-              padding: "18px 40px",
-              textDecoration: "none",
-              transition: "background-color 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.backgroundColor = "#333333";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.backgroundColor = "#1a1a1a";
-            }}
-          >
-            Application Form
-            <svg
-              width="18"
-              height="14"
-              viewBox="0 0 18 14"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M1 7H17M11 1L17 7L11 13"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
+          {/* Final border after last step */}
+          <div style={{ borderTop: "1px solid #020202" }} />
         </div>
 
       </div>

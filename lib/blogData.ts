@@ -1,25 +1,17 @@
 // lib/blogData.ts
-//
-// Single source of truth for ALL blog posts.
-// Used by:
-//   - BlogGrid     (card list on /blog)
-//   - [slug]/page  (individual post page)
-//
-// To add a new post: add one object to the POSTS array.
-// The slug becomes the URL: /blog/[slug]
 
 export interface BlogPost {
-  slug: string;           // URL segment e.g. "how-to-organise-your-studies-for-success"
+  slug: string;
   title: string;
   date: string;
-  image: string;          // hero / card image URL
+  image: string;
   imageAlt: string;
-  excerpt: string;        // shown on the card grid
-  tags: string[];         // shown at bottom of post
-  sections: Section[];    // article body
-  quote?: Quote;          // optional pull-quote block
-  youtubeId?: string;     // optional embedded YouTube video
-  prev?: { slug: string; title: string }; // "Previous" nav link
+  excerpt: string;
+  tags: string[];
+  sections: Section[];
+  quote?: Quote;
+  youtubeId?: string;
+  prev?: { slug: string; title: string };
 }
 
 export interface Section {
@@ -32,22 +24,16 @@ export interface Quote {
   author: string;
 }
 
-// ─────────────────────────────────────────────
-// ALL POSTS
-// ─────────────────────────────────────────────
-
 export const POSTS: BlogPost[] = [
   {
     slug: "how-to-organise-your-studies-for-success",
     title: "How to Organise Your Studies for Success",
     date: "December 29, 2020",
-    image:
-      "https://www.primeleed.com/wp-content/uploads/2020/12/christina-wocintechchat-com-FPQlXQtjkqU-unsplash.jpg",
+    image: "https://www.primeleed.com/wp-content/uploads/2020/12/christina-wocintechchat-com-FPQlXQtjkqU-unsplash.jpg",
     imageAlt: "Students studying together on laptops",
-    excerpt:
-      "Stay Focused on Your Studies There is a phrase called 'Decision Fatigue' which may be weighing you down. I first heard about this procrastination phenomenon",
+    excerpt: "Stay Focused on Your Studies There is a phrase called 'Decision Fatigue' which may be weighing you down. I first heard about this procrastination phenomenon",
     tags: ["Online Bachelor's Degree", "Organization", "Productivity", "Student Success"],
-    youtubeId: "dQw4w9WgXcQ", // replace with actual video id
+    youtubeId: "CdRb8eX2Yns", // ✅ clean ID only — no ?si= parameter
     quote: {
       text: "After all the hard work, it's very rewarding to cross off the topics on your calendar to show how far you have come.",
       author: "John Doe",
@@ -90,12 +76,11 @@ export const POSTS: BlogPost[] = [
     slug: "4th-workshop-advanced-materials",
     title: '4th Workshop "Advanced Materials"',
     date: "December 29, 2020",
-    image:
-      "https://www.primeleed.com/wp-content/uploads/2020/12/iStock-1176987265-1.jpg",
+    image: "https://www.primeleed.com/wp-content/uploads/2020/12/iStock-1176987265-1.jpg",
     imageAlt: "Workshop classroom",
-    excerpt:
-      "Capacity Building Workshop on Distance Learning Running a capacity building workshop on Distance Learning for Estuar university, jointly organised by the University of London Centre",
+    excerpt: "Capacity Building Workshop on Distance Learning Running a capacity building workshop on Distance Learning for Estuar university, jointly organised by the University of London Centre",
     tags: ["Workshop", "Distance Learning", "Education"],
+    youtubeId: "CdRb8eX2Yns", // ✅ clean ID only
     sections: [
       {
         heading: "About the Workshop",
@@ -116,12 +101,11 @@ export const POSTS: BlogPost[] = [
     slug: "what-is-the-difference-between-university-and-college",
     title: "What is the Difference Between University and College?",
     date: "April 11, 2020",
-    image:
-      "https://www.primeleed.com/wp-content/uploads/2020/04/you-x-ventures-fznQW-kn5VU-unsplash.jpg",
+    image: "https://www.primeleed.com/wp-content/uploads/2020/04/you-x-ventures-fznQW-kn5VU-unsplash.jpg",
     imageAlt: "Students at university",
-    excerpt:
-      'What Is a College? Oftentimes schools with "college" in their name are smaller institutions that emphasize undergraduate education, Johanna Fishbein, head of university advising at',
+    excerpt: 'What Is a College? Oftentimes schools with "college" in their name are smaller institutions that emphasize undergraduate education, Johanna Fishbein, head of university advising at',
     tags: ["University", "College", "Higher Education"],
+    youtubeId: "CdRb8eX2Yns", // ✅ clean ID only
     sections: [
       {
         heading: "What Is a College?",
@@ -143,12 +127,11 @@ export const POSTS: BlogPost[] = [
     slug: "how-to-choose-a-business-program-at-university",
     title: "How to Choose a Business Program at University",
     date: "April 11, 2020",
-    image:
-      "https://www.primeleed.com/wp-content/uploads/2020/04/akson-1K8pIbIrhkQ-unsplash.jpg",
+    image: "https://www.primeleed.com/wp-content/uploads/2020/04/akson-1K8pIbIrhkQ-unsplash.jpg",
     imageAlt: "Business students studying",
-    excerpt:
-      "Environment Choosing one with an international perspective offers excellent practice for the global economic environment in which today's businesses operate. In fact, according to the",
+    excerpt: "Environment Choosing one with an international perspective offers excellent practice for the global economic environment in which today's businesses operate. In fact, according to the",
     tags: ["Business", "University", "Career"],
+    youtubeId: "CdRb8eX2Yns", // ✅ clean ID only
     sections: [
       {
         heading: "Consider the Environment",
@@ -175,12 +158,11 @@ export const POSTS: BlogPost[] = [
     slug: "how-to-get-ready-for-a-new-semester",
     title: "How to Get Ready for a New Semester",
     date: "April 11, 2020",
-    image:
-      "https://www.primeleed.com/wp-content/uploads/2020/12/annie-spratt-dWYU3i-mqEo-unsplash-1.jpg",
+    image: "https://www.primeleed.com/wp-content/uploads/2020/12/annie-spratt-dWYU3i-mqEo-unsplash-1.jpg",
     imageAlt: "Students preparing for new semester",
-    excerpt:
-      "Get Organized The first step to manage your stress throughout the school year is to be in control of your academic responsibilities. If you receive",
+    excerpt: "Get Organized The first step to manage your stress throughout the school year is to be in control of your academic responsibilities. If you receive",
     tags: ["Productivity", "Student Success", "Organization"],
+    youtubeId: "CdRb8eX2Yns", // ✅ clean ID only
     sections: [
       {
         heading: "Get Organized",
@@ -207,12 +189,11 @@ export const POSTS: BlogPost[] = [
     slug: "4-tips-to-navigate-your-first-semester-abroad-like-a-pro",
     title: "4 Tips to Navigate Your First Semester Abroad Like a Pro",
     date: "April 11, 2020",
-    image:
-      "https://www.primeleed.com/wp-content/uploads/2020/12/andrew-neel-QLqNalPe0RA-unsplash-1.jpg",
+    image: "https://www.primeleed.com/wp-content/uploads/2020/12/andrew-neel-QLqNalPe0RA-unsplash-1.jpg",
     imageAlt: "Student studying abroad",
-    excerpt:
-      "Study Early and Often Some students wait until a few days before the exam to study for the NCLEX, but you should really begin on",
+    excerpt: "Study Early and Often Some students wait until a few days before the exam to study for the NCLEX, but you should really begin on",
     tags: ["Study Abroad", "Student Success", "Tips"],
+    youtubeId: "CdRb8eX2Yns", // ✅ clean ID only
     sections: [
       {
         heading: "Study Early and Often",
@@ -245,12 +226,11 @@ export const POSTS: BlogPost[] = [
     slug: "improve-your-english-and-prepare-for-college-transfer",
     title: "Improve your English and Prepare for College Transfer",
     date: "April 11, 2020",
-    image:
-      "https://www.primeleed.com/wp-content/uploads/2020/04/blake-wisz-GFrBMipOd_E-unsplash.jpg",
+    image: "https://www.primeleed.com/wp-content/uploads/2020/04/blake-wisz-GFrBMipOd_E-unsplash.jpg",
     imageAlt: "Students learning English",
-    excerpt:
-      "Learn English From U.S. Instructors, Locals or Mentors Prospective international students may also want to consider learning American English through a summer program on a",
+    excerpt: "Learn English From U.S. Instructors, Locals or Mentors Prospective international students may also want to consider learning American English through a summer program on a",
     tags: ["English", "College Transfer", "International Students"],
+    youtubeId: "CdRb8eX2Yns", // ✅ clean ID only
     sections: [
       {
         heading: "Learn From U.S. Instructors, Locals or Mentors",
@@ -274,21 +254,14 @@ export const POSTS: BlogPost[] = [
   },
 ];
 
-// ─────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────
-
-/** Get a single post by slug — returns undefined if not found */
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return POSTS.find((p) => p.slug === slug);
 }
 
-/** Get 3 related posts excluding the current slug */
 export function getRelatedPosts(currentSlug: string): BlogPost[] {
   return POSTS.filter((p) => p.slug !== currentSlug).slice(0, 3);
 }
 
-/** Generate all slugs — used by generateStaticParams */
 export function getAllSlugs(): string[] {
   return POSTS.map((p) => p.slug);
 }
