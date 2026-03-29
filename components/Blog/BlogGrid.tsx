@@ -20,7 +20,7 @@ const STYLES = `
   @media (min-width: 1440px) { .bg-section { padding: 100px 64px 120px; } }
 
   .bg-container {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
   }
   @media (min-width: 1440px) { .bg-container { max-width: 1200px; } }

@@ -1,18 +1,7 @@
-// components/admission/HowToApplyContent.tsx
-//
-// Matches primeleed.com/how-to-apply/ EXACTLY as seen in the screenshots:
-//
-// LAYOUT (single centered column, max-width ~820px):
-//   1. Intro paragraph (centered, bold, large)
-//   2. Requirements section — centered heading with document icon, centered subheading,
-//      centered requirement lines (each prefixed with –)
-//   3. Six numbered steps — number (left ~120px col) + title + description (right col)
-//   4. Application Form button (centered, dark background)
 "use client";
 
 import Link from "next/link";
 
-// ── STEP DATA ──
 const steps = [
   {
     number: "01",
@@ -52,7 +41,6 @@ const steps = [
   },
 ];
 
-// ── REQUIREMENTS DATA ──
 const requirements = [
   "Students who are 18 years and above at the start of the course are eligible to apply.",
   "If English is not your first language, you will need to demonstrate English language proficiency equivalent to IELTS (Academic) 6.0 overall, with a minimum of 5.5 in each band and 6.0 in speaking.",
@@ -60,21 +48,17 @@ const requirements = [
   "Applicants who do not meet the specified entry criteria may undergo individual consideration by the Academic Director. In such cases, evaluation will take into account relevant factors such as previous academic achievements, work experience, and life skills experience, as supported by evidence.",
 ];
 
-// ── DOCUMENT ICON ──
-// Matches the "lined document" icon shown next to "Requirements" heading
-// in screenshots 1 & 2 — two horizontal lines inside a document shape.
 function DocumentIcon() {
   return (
     <svg
-      width="32"
-      height="36"
+      width="36"
+      height="40"
       viewBox="0 0 32 36"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       style={{ display: "inline-block", verticalAlign: "middle" }}
     >
-      {/* Document outline */}
       <rect
         x="1.5"
         y="1.5"
@@ -85,7 +69,6 @@ function DocumentIcon() {
         strokeWidth="2"
         fill="none"
       />
-      {/* Three horizontal lines representing text */}
       <line x1="7" y1="11" x2="25" y2="11" stroke="#333" strokeWidth="2" strokeLinecap="round" />
       <line x1="7" y1="17" x2="25" y2="17" stroke="#333" strokeWidth="2" strokeLinecap="round" />
       <line x1="7" y1="23" x2="19" y2="23" stroke="#333" strokeWidth="2" strokeLinecap="round" />
@@ -98,28 +81,24 @@ export default function HowToApplyContent() {
     <section
       style={{
         backgroundColor: "#ffffff",
-        paddingTop: "60px",
-        paddingBottom: "80px",
-        paddingLeft: "20px",
-        paddingRight: "20px",
+        paddingTop: "80px",
+        paddingBottom: "100px",
+        paddingLeft: "60px",
+        paddingRight: "60px",
       }}
     >
-      {/* ── OUTER WRAPPER — centered, max 820px ── */}
-      <div style={{ maxWidth: "820px", margin: "0 auto" }}>
+      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
 
-        {/* ══════════════════════════════════════
-            INTRO PARAGRAPH
-            Centered, bold, large — matches screenshot 2 top text
-            ══════════════════════════════════════ */}
+        {/* ── INTRO PARAGRAPH ── */}
         <p
           style={{
             fontFamily: "'Work Sans', sans-serif",
-            fontSize: "20px",
+            fontSize: "24px",
             fontWeight: "700",
             color: "#1a1a1a",
-            lineHeight: "1.6",
-            textAlign: "center",
-            marginBottom: "60px",
+            lineHeight: "1.7",
+            textAlign: "justify",
+            marginBottom: "70px",
           }}
         >
           To ensure you are well-prepared when filling out the application
@@ -128,27 +107,23 @@ export default function HowToApplyContent() {
           you anticipate and navigate through the application process with ease.
         </p>
 
-        {/* ══════════════════════════════════════
-            REQUIREMENTS SECTION
-            Centered document icon + "Requirements" heading
-            Centered subheading + centered requirement lines
-            ══════════════════════════════════════ */}
-        <div style={{ textAlign: "center", marginBottom: "70px" }}>
+        {/* ── REQUIREMENTS SECTION ── */}
+        <div style={{ textAlign: "center", marginBottom: "80px" }}>
 
-          {/* Heading: icon + "Requirements" side by side, centered */}
+          {/* Icon + Heading */}
           <div
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: "14px",
-              marginBottom: "28px",
+              gap: "16px",
+              marginBottom: "32px",
             }}
           >
             <DocumentIcon />
             <h2
               style={{
                 fontFamily: "'Work Sans', sans-serif",
-                fontSize: "38px",
+                fontSize: "48px",
                 fontWeight: "800",
                 color: "#1a1a1a",
                 margin: 0,
@@ -163,22 +138,22 @@ export default function HowToApplyContent() {
           <h3
             style={{
               fontFamily: "'Work Sans', sans-serif",
-              fontSize: "16px",
+              fontSize: "18px",
               fontWeight: "700",
               color: "#1a1a1a",
-              marginBottom: "28px",
+              marginBottom: "32px",
               marginTop: 0,
             }}
           >
             Undergraduate &amp; Graduate Diploma Requirements:
           </h3>
 
-          {/* Requirements list — centered, each line prefixed with – */}
+          {/* Requirements list */}
           <div
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "16px",
+              gap: "20px",
             }}
           >
             {requirements.map((req, i) => (
@@ -186,11 +161,11 @@ export default function HowToApplyContent() {
                 key={i}
                 style={{
                   fontFamily: "'Work Sans', sans-serif",
-                  fontSize: "15px",
+                  fontSize: "17px",
                   color: "#333333",
-                  lineHeight: "1.7",
+                  lineHeight: "1.8",
                   margin: 0,
-                  textAlign: "center",
+                  textAlign: "left",
                 }}
               >
                 – {req}
@@ -199,31 +174,26 @@ export default function HowToApplyContent() {
           </div>
         </div>
 
-        {/* ══════════════════════════════════════
-            SIX NUMBERED STEPS
-            Each row: large bold number (fixed ~90px) | title + description
-            Separated by subtle top borders (except first)
-            ══════════════════════════════════════ */}
+        {/* ── SIX NUMBERED STEPS ── */}
         <div>
           {steps.map((step, index) => (
             <div
               key={step.number}
               style={{
                 display: "grid",
-                // Number column ~90px, content fills the rest
-                gridTemplateColumns: "90px 1fr",
-                gap: "20px",
+                gridTemplateColumns: "120px 1fr",
+                gap: "32px",
                 alignItems: "start",
-                paddingTop: index === 0 ? "0" : "40px",
-                paddingBottom: "40px",
+                paddingTop: index === 0 ? "0" : "48px",
+                paddingBottom: "48px",
                 borderTop: index > 0 ? "1px solid #e0e0e0" : "none",
               }}
             >
-              {/* Step number — large, bold, dark, matches screenshot font exactly */}
+              {/* Step number */}
               <div
                 style={{
                   fontFamily: "'Work Sans', sans-serif",
-                  fontSize: "32px",
+                  fontSize: "42px",
                   fontWeight: "800",
                   color: "#1a1a1a",
                   lineHeight: "1",
@@ -238,10 +208,10 @@ export default function HowToApplyContent() {
                 <h3
                   style={{
                     fontFamily: "'Work Sans', sans-serif",
-                    fontSize: "18px",
+                    fontSize: "22px",
                     fontWeight: "700",
                     color: "#1a1a1a",
-                    margin: "0 0 10px 0",
+                    margin: "0 0 12px 0",
                     lineHeight: "1.3",
                   }}
                 >
@@ -250,9 +220,9 @@ export default function HowToApplyContent() {
                 <p
                   style={{
                     fontFamily: "'Work Sans', sans-serif",
-                    fontSize: "15px",
+                    fontSize: "17px",
                     color: "#444444",
-                    lineHeight: "1.75",
+                    lineHeight: "1.8",
                     margin: 0,
                   }}
                 >
@@ -262,20 +232,16 @@ export default function HowToApplyContent() {
             </div>
           ))}
 
-          {/* Final border line after last step */}
+          {/* Final border after last step */}
           <div style={{ borderTop: "1px solid #e0e0e0" }} />
         </div>
 
-        {/* ══════════════════════════════════════
-            APPLICATION FORM BUTTON
-            Centered, dark background, arrow icon
-            Matches screenshot 4 bottom button exactly
-            ══════════════════════════════════════ */}
+        {/* ── APPLICATION FORM BUTTON ── */}
         <div
           style={{
             display: "flex",
             justifyContent: "center",
-            marginTop: "48px",
+            marginTop: "56px",
           }}
         >
           <Link
@@ -287,15 +253,15 @@ export default function HowToApplyContent() {
               backgroundColor: "#1a1a1a",
               color: "#ffffff",
               fontFamily: "'Work Sans', sans-serif",
-              fontSize: "15px",
+              fontSize: "16px",
               fontWeight: "600",
               letterSpacing: "0.03em",
-              padding: "18px 40px",
+              padding: "20px 48px",
               textDecoration: "none",
               transition: "background-color 0.2s ease",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.backgroundColor = "#333333";
+              (e.currentTarget as HTMLElement).style.backgroundColor = "#149AB5";
             }}
             onMouseLeave={(e) => {
               (e.currentTarget as HTMLElement).style.backgroundColor = "#1a1a1a";

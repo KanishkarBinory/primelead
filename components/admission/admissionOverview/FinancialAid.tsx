@@ -11,7 +11,7 @@ export default function FinancialAid() {
       <div
         className="mx-auto"
         style={{
-          maxWidth: "1000px",
+          maxWidth: "1200px",
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "80px",
