@@ -9,9 +9,9 @@ type FAQItem = {
 };
 
 type Props = {
-  title?: string;
+  title?: string | false;
   items?: FAQItem[];
-  defaultOpen?: number;
+  defaultOpen?: number | null;
 };
 
 // Default FAQ data — override via props for different pages
@@ -161,22 +161,24 @@ const DEFAULT_FAQ: FAQItem[] = [
 export default function FAQSection({
   title = "FAQ",
   items = DEFAULT_FAQ,
-  defaultOpen = 0,
+  defaultOpen = null,
 }: Props) {
   return (
-    <section className="w-full bg-white py-10 md:py-16">
-      <div className="max-w-5xl mx-auto px-5 md:px-8">
+    <section className="w-full bg-white pt-4 pb-20 md:pt-15 md:pb-16">
+      <div className="max-w-365 mx-auto px-5 md:px-8">
         {/* Title — server rendered ✅ */}
-        <h1
-          className="font-black mb-10 md:mb-14"
-          style={{
-            fontFamily: "'Work Sans', sans-serif",
-            fontSize: "clamp(36px, 5vw, 60px)",
-            color: "#0d1b2a",
-          }}
-        >
-          {title}
-        </h1>
+        {title && (
+          <h1
+            className="font-black pt-4 pb-20 md:pt-30 md:pb-10"
+            style={{
+              fontFamily: "'Work Sans', sans-serif",
+              fontSize: "clamp(36px, 5vw, 60px)",
+              color: "#0d1b2a",
+            }}
+          >
+            {title}
+          </h1>
+        )}
 
         {/* Accordion — only interactive part is client ✅ */}
         <FAQAccordion items={items} defaultOpen={defaultOpen} />

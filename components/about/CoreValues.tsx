@@ -1,10 +1,13 @@
 // components/about/CoreValues.tsx
+// FULLY RESPONSIVE — Mobile / Tablet / Laptop / TV
+//
+// Mobile  (<640px)  — 1 column, horizontal rules between cards
+// Tablet  (640px+)  — 3 columns (only 3 items, fits perfectly), vertical borders
+// Laptop  (1024px+) — wider spacing
+// TV      (1440px+) — max-width expanded
 
-'use client'
-
-import { useEffect, useRef } from 'react'
-import { ClipboardList, MessageSquare, CalendarCheck, LucideIcon } from 'lucide-react'
-import CoreValueCard from './CoreValueCard'
+import { ClipboardList, MessageSquare, CalendarCheck, LucideIcon } from "lucide-react";
+import CoreValueCard from "./CoreValueCard";
 
 const STYLES = `
   .cv-section {
@@ -27,13 +30,13 @@ const STYLES = `
     font-weight: 800;
     line-height: 1.5em;
     color: #1a1a1a;
-    margin: 0 auto 48px auto;
+    margin: 0 0 48px 0;
     font-size: clamp(18px, 3vw, 26px);
-    max-width: 1300px;
   }
   @media (min-width: 640px)  { .cv-intro { margin-bottom: 56px; } }
   @media (min-width: 1024px) { .cv-intro { margin-bottom: 64px; } }
 
+  /* Grid */
   .cv-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -43,6 +46,7 @@ const STYLES = `
     .cv-grid { grid-template-columns: repeat(3, 1fr); }
   }
 
+  /* Each cell — row spacing & horizontal rules on mobile */
   .cv-cell {
     padding: 28px 0;
     border-top: 1px solid #e0e0e0;
@@ -51,31 +55,14 @@ const STYLES = `
   .cv-cell:first-child { border-top: none; padding-top: 0; }
   .cv-cell:last-child  { padding-bottom: 0; }
 
+  /* Tablet+: all 3 are in one row — remove top borders entirely */
   @media (min-width: 640px) {
-    .cv-cell { border-top: none; padding: 0; }
+    .cv-cell {
+      border-top: none;
+      padding: 0;
+    }
   }
-
-  /* ── Card: fades + scales up on scroll ── */
-  .cv-card-anim {
-    opacity: 0;
-    transform: scale(0.85);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .cv-card-anim.visible {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  /* Card stagger — each card appears slightly after the previous */
-  .cv-card-anim:nth-child(1) { transition-delay: 0s;    }
-  .cv-card-anim:nth-child(2) { transition-delay: 0.15s; }
-  .cv-card-anim:nth-child(3) { transition-delay: 0.3s;  }
-
-  /* Icon stagger — icon pops in slightly after its own card */
-  .cv-card-anim:nth-child(1) .cvc-icon { transition-delay: 0.2s;  }
-  .cv-card-anim:nth-child(2) .cvc-icon { transition-delay: 0.35s; }
-  .cv-card-anim:nth-child(3) .cvc-icon { transition-delay: 0.5s;  }
-`
+`;
 
 interface Value {
   icon: LucideIcon
@@ -138,14 +125,14 @@ export default function CoreValues({ introText }: CoreValuesProps) {
       <style>{STYLES}</style>
       <section className="cv-section">
         <div className="cv-container">
+          <p className="cv-intro">
+            Aligned with global shifts in the economy, society, and environment,
+            our vision drives our mission and upholds our core values
+          </p>
 
-          {introText && (
-            <p className="cv-intro">{introText}</p>
-          )}
-
-          <div className="cv-grid" ref={gridRef}>
+          <div className="cv-grid">
             {values.map((value, index) => (
-              <div key={value.title} className="cv-cell cv-card-anim">
+              <div key={value.title} className="cv-cell">
                 <CoreValueCard
                   icon={value.icon}
                   title={value.title}
@@ -156,9 +143,8 @@ export default function CoreValues({ introText }: CoreValuesProps) {
               </div>
             ))}
           </div>
-
         </div>
       </section>
     </>
-  )
+  );
 }

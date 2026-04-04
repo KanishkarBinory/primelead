@@ -32,8 +32,8 @@ const Guidance = () => {
         }
       />
       <FAQSection
-        title="Support & Guidance"
-        defaultOpen={0}
+        title={false}
+        defaultOpen={null}
         items={[
           {
             question: "Health and wellbeing support",
