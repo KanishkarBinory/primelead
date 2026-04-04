@@ -1,37 +1,27 @@
 "use client";
 // components/admission/admissionForm/ApplicationForm.tsx
 //
-// Style updated to exactly match image 2:
-// - White inputs with light gray border
-// - Red asterisks on required fields
-// - Section headings: "Personal Information", "Address Information"
-// - Phone field with country flag + code dropdown
-// - All original content/fields/validation preserved
+// FIXES in this version:
+// 1. fileRef prop renamed to inputRef — avoids React ref prop conflict
+// 2. Date.now() wrapped in useMemo/useState to avoid hydration mismatch
+// 3. Phone field rebuilt as uncontrolled-friendly — no overflow:hidden,
+//    explicit heights in px, caretColor set — cursor always visible
+// 4. Name fields (firstName, lastName, fullName) — only alphabet + spaces allowed
+// 5. Full validation on every step before proceeding
 
 import { useState, useRef } from "react";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 
+// ── Types ─────────────────────────────────────────────────────────
 interface FormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  countryCode: string;
-  dateOfBirth: string;
-  studentType: string;
-  address: string;
-  school: string;
-  yearOfCompletion: string;
-  highestQualification: string;
-  currentStatus: string;
-  areaOfStudy: string;
-  degreeLevel: string;
-  passportFile: File | null;
-  cvFile: File | null;
-  howDidYouFindUs: string;
-  fullName: string;
-  additionalInfo: string;
-  privacyAccepted: boolean;
+  firstName: string; lastName: string; email: string;
+  phone: string; countryCode: string; dateOfBirth: string;
+  studentType: string; address: string; school: string;
+  yearOfCompletion: string; highestQualification: string;
+  currentStatus: string; areaOfStudy: string; degreeLevel: string;
+  passportFile: File | null; cvFile: File | null;
+  howDidYouFindUs: string; fullName: string;
+  additionalInfo: string; privacyAccepted: boolean;
 }
 
 const STEPS = [
@@ -42,102 +32,79 @@ const STEPS = [
   { number: 5, title: "Declaration" },
 ];
 
-// Countries list for flag dropdown — same layout as image 2
 const COUNTRIES = [
-  { code: "+44", flag: "🇬🇧", iso: "GB" },
-  { code: "+1",  flag: "🇺🇸", iso: "US" },
-  { code: "+61", flag: "🇦🇺", iso: "AU" },
-  { code: "+91", flag: "🇮🇳", iso: "IN" },
-  { code: "+92", flag: "🇵🇰", iso: "PK" },
-  { code: "+94", flag: "🇱🇰", iso: "LK" },
-  { code: "+880",flag: "🇧🇩", iso: "BD" },
-  { code: "+33", flag: "🇫🇷", iso: "FR" },
-  { code: "+49", flag: "🇩🇪", iso: "DE" },
-  { code: "+39", flag: "🇮🇹", iso: "IT" },
-  { code: "+34", flag: "🇪🇸", iso: "ES" },
-  { code: "+31", flag: "🇳🇱", iso: "NL" },
-  { code: "+63", flag: "🇵🇭", iso: "PH" },
-  { code: "+60", flag: "🇲🇾", iso: "MY" },
-  { code: "+65", flag: "🇸🇬", iso: "SG" },
-  { code: "+971",flag: "🇦🇪", iso: "AE" },
-  { code: "+966",flag: "🇸🇦", iso: "SA" },
-  { code: "+20", flag: "🇪🇬", iso: "EG" },
-  { code: "+234",flag: "🇳🇬", iso: "NG" },
-  { code: "+27", flag: "🇿🇦", iso: "ZA" },
-  { code: "+55", flag: "🇧🇷", iso: "BR" },
-  { code: "+52", flag: "🇲🇽", iso: "MX" },
-  { code: "+81", flag: "🇯🇵", iso: "JP" },
-  { code: "+82", flag: "🇰🇷", iso: "KR" },
-  { code: "+86", flag: "🇨🇳", iso: "CN" },
+  { code: "+44", flag: "🇬🇧" }, { code: "+1",  flag: "🇺🇸" },
+  { code: "+61", flag: "🇦🇺" }, { code: "+91", flag: "🇮🇳" },
+  { code: "+92", flag: "🇵🇰" }, { code: "+94", flag: "🇱🇰" },
+  { code: "+880",flag: "🇧🇩" }, { code: "+33", flag: "🇫🇷" },
+  { code: "+49", flag: "🇩🇪" }, { code: "+39", flag: "🇮🇹" },
+  { code: "+34", flag: "🇪🇸" }, { code: "+31", flag: "🇳🇱" },
+  { code: "+63", flag: "🇵🇭" }, { code: "+60", flag: "🇲🇾" },
+  { code: "+65", flag: "🇸🇬" }, { code: "+971",flag: "🇦🇪" },
+  { code: "+966",flag: "🇸🇦" }, { code: "+20", flag: "🇪🇬" },
+  { code: "+234",flag: "🇳🇬" }, { code: "+27", flag: "🇿🇦" },
+  { code: "+55", flag: "🇧🇷" }, { code: "+52", flag: "🇲🇽" },
+  { code: "+81", flag: "🇯🇵" }, { code: "+82", flag: "🇰🇷" },
+  { code: "+86", flag: "🇨🇳" },
 ];
 
-// ── Shared style objects matching image 2 exactly ─────────────────
-
-// White bg, light border, slight radius — matches image 2
-const inp: React.CSSProperties = {
+// ── Shared style constants ────────────────────────────────────────
+const INPUT: React.CSSProperties = {
   width: "100%",
-  padding: "13px 16px",
-  border: "1px solid #dde1e7",
-  backgroundColor: "#f4f6f8",
+  height: "52px",
+  padding: "0 16px",
+  border: "1px solid #e0e4ea",
+  backgroundColor: "#f5f7fa",
   fontFamily: "'Inter', sans-serif",
   fontSize: "15px",
   color: "#292929",
   outline: "none",
   borderRadius: "4px",
   boxSizing: "border-box" as const,
-  transition: "border-color 0.2s",
+  transition: "border-color 0.2s, box-shadow 0.2s",
+  caretColor: "#149AB5",
 };
 
-// Label style — same weight as image 2
-const lbl: React.CSSProperties = {
+const LABEL: React.CSSProperties = {
   fontFamily: "'Inter', sans-serif",
   fontSize: "14px",
   fontWeight: "400",
   color: "#292929",
-  marginBottom: "7px",
+  marginBottom: "8px",
   display: "block",
+  lineHeight: "1",
 };
 
-// Red asterisk required marker
-const Req = () => (
-  <span style={{ color: "#e53e3e", marginLeft: "2px", fontWeight: 600 }}>*</span>
-);
-
-// Error text
-const err: React.CSSProperties = {
+const ERR: React.CSSProperties = {
   fontSize: "12px",
   color: "#e53e3e",
   fontFamily: "'Inter', sans-serif",
-  marginTop: "4px",
+  marginTop: "5px",
   display: "block",
 };
 
-// Two-column row
-const row: React.CSSProperties = {
+const ROW: React.CSSProperties = {
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
-  gap: "20px",
+  gap: "24px",
 };
 
-// Field wrapper
-const fw: React.CSSProperties = {
+const FW: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
 };
 
-// Section heading — "Personal Information" style from image 2
-const secHead: React.CSSProperties = {
+const SECTION: React.CSSProperties = {
   fontFamily: "'Work Sans', sans-serif",
   fontSize: "20px",
   fontWeight: "700",
   color: "#292929",
-  marginBottom: "20px",
-  marginTop: "4px",
+  margin: "0 0 24px 0",
 };
 
-// Navigation button — dark, matching image 1 "Next" button
-const navBtn: React.CSSProperties = {
-  padding: "13px 30px",
+const BTN: React.CSSProperties = {
+  height: "52px",
+  padding: "0 32px",
   backgroundColor: "#292929",
   color: "#ffffff",
   border: "none",
@@ -146,200 +113,365 @@ const navBtn: React.CSSProperties = {
   fontWeight: "400",
   cursor: "pointer",
   borderRadius: "4px",
-  letterSpacing: "0.01em",
   transition: "background-color 0.2s",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "8px",
 };
 
+// Red asterisk for required fields
+const R = () => <span style={{ color: "#e53e3e", marginLeft: "3px" }}>*</span>;
+
+// ── Component ─────────────────────────────────────────────────────
 export default function ApplicationForm() {
   const [step,      setStep]      = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [errors,    setErrors]    = useState<Record<string, string>>({});
   const [focused,   setFocused]   = useState("");
+  // FIX 2: reference number generated once on submit, not on every render
+  const [refNum,    setRefNum]    = useState("");
 
   const [form, setForm] = useState<FormData>({
     firstName: "", lastName: "", email: "", phone: "",
-    countryCode: "+44",
-    dateOfBirth: "", studentType: "", address: "",
-    school: "", yearOfCompletion: "", highestQualification: "", currentStatus: "",
-    areaOfStudy: "", degreeLevel: "",
+    countryCode: "+44", dateOfBirth: "", studentType: "", address: "",
+    school: "", yearOfCompletion: "", highestQualification: "",
+    currentStatus: "", areaOfStudy: "", degreeLevel: "",
     passportFile: null, cvFile: null, howDidYouFindUs: "",
     fullName: "", additionalInfo: "", privacyAccepted: false,
   });
 
+  // FIX 1: refs stored at component level, not inside sub-components
+  // This avoids the React ref forwarding issue at lines 552/555
   const passportRef = useRef<HTMLInputElement>(null);
   const cvRef       = useRef<HTMLInputElement>(null);
 
-  const set = (field: keyof FormData, value: string | boolean | File | null) => {
-    setForm(p => ({ ...p, [field]: value }));
-    setErrors(p => { const n = { ...p }; delete n[field]; return n; });
+  const set = (k: keyof FormData, v: string | boolean | File | null) => {
+    setForm(p => ({ ...p, [k]: v }));
+    setErrors(p => { const n = { ...p }; delete n[k]; return n; });
   };
 
-  // Focused border highlight
-  const fi = (fieldName: string): React.CSSProperties => ({
-    ...inp,
-    borderColor: focused === fieldName ? "#149AB5" : errors[fieldName] ? "#e53e3e" : "#dde1e7",
-    boxShadow:   focused === fieldName ? "0 0 0 3px rgba(20,154,181,0.1)" : "none",
+  // FIX 4: only allow alphabet + spaces in name fields
+  const setName = (k: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+    set(k, val);
+  };
+
+  // FIX 3: phone only allows digits, spaces, hyphens
+  const setPhone = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^\d\s\-]/g, "");
+    set("phone", val);
+  };
+
+  // Dynamic input style with focus/error border
+  const si = (name: string, extra?: React.CSSProperties): React.CSSProperties => ({
+    ...INPUT,
+    borderColor: focused === name ? "#149AB5" : errors[name] ? "#e53e3e" : "#e0e4ea",
+    boxShadow:   focused === name ? "0 0 0 3px rgba(20,154,181,0.12)" : "none",
+    ...extra,
   });
 
+  const fo = (n: string) => () => setFocused(n);
+  const fb = ()           => setFocused("");
+
+  // ── Validation ────────────────────────────────────────────────
   const validate = () => {
     const e: Record<string, string> = {};
+
     if (step === 1) {
-      if (!form.firstName.trim()) e.firstName = "First name is required";
-      if (!form.lastName.trim())  e.lastName  = "Last name is required";
-      if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = "Valid email is required";
+      if (!form.firstName.trim())
+        e.firstName = "First name is required";
+      else if (!/^[a-zA-Z\s]+$/.test(form.firstName))
+        e.firstName = "First name must contain only letters";
+
+      if (!form.lastName.trim())
+        e.lastName = "Last name is required";
+      else if (!/^[a-zA-Z\s]+$/.test(form.lastName))
+        e.lastName = "Last name must contain only letters";
+
+      if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email))
+        e.email = "A valid email address is required";
+
       if (!form.phone.trim()) {
         e.phone = "Phone number is required";
       } else {
-        const parsed = parsePhoneNumberFromString(form.countryCode + form.phone.replace(/^0/, ""));
-        if (!parsed || !parsed.isValid()) e.phone = "Please enter a valid phone number";
+        const digits = form.phone.replace(/\D/g, "");
+        if (digits.length < 6 || digits.length > 15)
+          e.phone = "Please enter a valid phone number";
       }
-      if (!form.dateOfBirth)    e.dateOfBirth  = "Date of birth is required";
-      if (!form.studentType)    e.studentType  = "Please select a student type";
-      if (!form.address.trim()) e.address      = "Address is required";
+
+      if (!form.dateOfBirth)
+        e.dateOfBirth = "Date of birth is required";
+
+      if (!form.studentType)
+        e.studentType = "Please select a student type";
+
+      if (!form.address.trim())
+        e.address = "Address is required";
     }
+
     if (step === 2) {
-      if (!form.school.trim())               e.school               = "Required";
-      if (!form.yearOfCompletion.trim())      e.yearOfCompletion     = "Required";
-      if (!form.highestQualification.trim()) e.highestQualification = "Required";
-      if (!form.currentStatus)               e.currentStatus        = "Please select";
+      if (!form.school.trim())               e.school               = "School name is required";
+      if (!form.yearOfCompletion.trim())      e.yearOfCompletion     = "Year of completion is required";
+      if (!form.highestQualification.trim()) e.highestQualification = "Highest qualification is required";
+      if (!form.currentStatus)               e.currentStatus        = "Please select your current status";
     }
+
     if (step === 3) {
-      if (!form.areaOfStudy) e.areaOfStudy = "Please select";
-      if (!form.degreeLevel) e.degreeLevel = "Please select";
+      if (!form.areaOfStudy) e.areaOfStudy = "Please select an area of study";
+      if (!form.degreeLevel) e.degreeLevel = "Please select a degree level";
     }
+
     if (step === 4) {
-      if (!form.passportFile)    e.passportFile    = "Required";
-      if (!form.cvFile)          e.cvFile          = "Required";
-      if (!form.howDidYouFindUs) e.howDidYouFindUs = "Please select";
+      if (!form.passportFile)    e.passportFile    = "Please upload your passport or birth certificate";
+      if (!form.cvFile)          e.cvFile          = "Please upload your CV or resume";
+      if (!form.howDidYouFindUs) e.howDidYouFindUs = "Please tell us how you found us";
     }
+
     if (step === 5) {
-      if (!form.fullName.trim()) e.fullName        = "Required";
-      if (!form.privacyAccepted) e.privacyAccepted = "You must accept the privacy policy";
+      if (!form.fullName.trim())
+        e.fullName = "Full name is required";
+      else if (!/^[a-zA-Z\s]+$/.test(form.fullName))
+        e.fullName = "Full name must contain only letters";
+
+      if (!form.privacyAccepted)
+        e.privacyAccepted = "You must accept the privacy policy to submit";
     }
+
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  const next   = () => { if (validate()) { setStep(s => s + 1); window.scrollTo({ top: 0, behavior: "smooth" }); } };
-  const prev   = () => { setStep(s => s - 1); window.scrollTo({ top: 0, behavior: "smooth" }); };
-  const submit = () => { if (validate()) setSubmitted(true); };
+  const next = () => {
+    if (validate()) {
+      setStep(s => s + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+  const prev = () => {
+    setStep(s => s - 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const submit = () => {
+    if (validate()) {
+      // FIX 2: generate reference number once at submit time
+      setRefNum("PL-" + Date.now().toString().slice(-6));
+      setSubmitted(true);
+    }
+  };
 
-  // ── Custom select with chevron ─────────────────────────────────
-  const Sel = ({
-    value, onChange, children, fieldName,
-  }: {
-    value: string; onChange: (v: string) => void;
-    children: React.ReactNode; fieldName: string;
+  // ── Select with chevron ───────────────────────────────────────
+  const Sel = ({ name, value, onChange, children }: {
+    name: string; value: string;
+    onChange: (v: string) => void; children: React.ReactNode;
   }) => (
     <div style={{ position: "relative" }}>
       <select
         value={value}
         onChange={e => onChange(e.target.value)}
-        onFocus={() => setFocused(fieldName)}
-        onBlur={() => setFocused("")}
-        style={{ ...fi(fieldName), paddingRight: "40px", cursor: "pointer", appearance: "none" as const }}
+        onFocus={fo(name)}
+        onBlur={fb}
+        style={{
+          ...si(name),
+          paddingRight: "42px",
+          cursor: "pointer",
+          appearance: "none" as const,
+        }}
       >
         {children}
       </select>
-      <div style={{ position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
-        <svg width="11" height="7" viewBox="0 0 11 7" fill="none">
-          <path d="M1 1L5.5 6L10 1" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <div style={{
+        position: "absolute", right: "16px", top: "50%",
+        transform: "translateY(-50%)", pointerEvents: "none",
+      }}>
+        <svg width="12" height="7" viewBox="0 0 12 7" fill="none">
+          <path d="M1 1L6 6L11 1" stroke="#6b7280" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
-      {errors[fieldName] && <span style={err}>{errors[fieldName]}</span>}
+      {errors[name] && <span style={ERR}>{errors[name]}</span>}
     </div>
   );
 
-  // ── Phone field — flag + code dropdown + number input (image 2 style) ──
-  const PhoneField = () => {
-    const selected = COUNTRIES.find(c => c.code === form.countryCode) || COUNTRIES[0];
-    return (
-      <div>
-        <div style={{
-          display: "flex",
-          border: `1px solid ${focused === "phone" ? "#149AB5" : errors.phone ? "#e53e3e" : "#dde1e7"}`,
-          borderRadius: "4px",
-          overflow: "hidden",
-          backgroundColor: "#f4f6f8",
-          boxShadow: focused === "phone" ? "0 0 0 3px rgba(20,154,181,0.1)" : "none",
-          transition: "border-color 0.2s, box-shadow 0.2s",
-        }}>
-          {/* Flag + code selector — matches image 2 "🇬🇧 · +44" style */}
-          <div style={{ position: "relative", flexShrink: 0 }}>
-            <select
-              value={form.countryCode}
-              onChange={e => set("countryCode", e.target.value)}
-              style={{
-                padding: "13px 30px 13px 12px",
-                border: "none",
-                borderRight: "1px solid #dde1e7",
-                backgroundColor: "#eef1f4",
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "14px",
-                color: "#292929",
-                outline: "none",
-                cursor: "pointer",
-                appearance: "none" as const,
-                minWidth: "100px",
-              }}
-            >
-              {COUNTRIES.map(c => (
-                <option key={c.code + c.iso} value={c.code}>
-                  {c.flag}  {c.code}
-                </option>
-              ))}
-            </select>
-            {/* Chevron */}
-            <div style={{ position: "absolute", right: "8px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
-              <svg width="9" height="6" viewBox="0 0 9 6" fill="none">
-                <path d="M1 1L4.5 5L8 1" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-          </div>
-
-          {/* Number input */}
-          <input
-            type="tel"
-            placeholder="7700 900000"
-            value={form.phone}
-            onChange={e => set("phone", e.target.value)}
-            onFocus={() => setFocused("phone")}
-            onBlur={() => setFocused("")}
+  // ── Phone field ───────────────────────────────────────────────
+  // FIX 3: No overflow:hidden, explicit px heights, caretColor visible
+  // The wrapper div provides the border — input has no border of its own
+  const PhoneField = () => (
+    <div>
+      <div style={{
+        display: "flex",
+        alignItems: "stretch",
+        height: "52px",
+        border: `1px solid ${
+          focused === "phone" ? "#149AB5"
+          : errors.phone ? "#e53e3e"
+          : "#e0e4ea"
+        }`,
+        borderRadius: "4px",
+        backgroundColor: "#f5f7fa",
+        boxShadow: focused === "phone" ? "0 0 0 3px rgba(20,154,181,0.12)" : "none",
+        transition: "border-color 0.2s, box-shadow 0.2s",
+        // NO overflow:hidden — that was clipping the text cursor
+      }}>
+        {/* Country code dropdown */}
+        <div style={{ position: "relative", flexShrink: 0, display: "flex", alignItems: "center" }}>
+          <select
+            value={form.countryCode}
+            onChange={e => set("countryCode", e.target.value)}
             style={{
-              flex: 1,
-              padding: "13px 16px",
+              height: "50px",
+              padding: "0 28px 0 10px",
               border: "none",
-              backgroundColor: "transparent",
+              borderRight: "1px solid #e0e4ea",
+              borderRadius: "4px 0 0 4px",
+              backgroundColor: "#edf0f4",
               fontFamily: "'Inter', sans-serif",
-              fontSize: "15px",
+              fontSize: "14px",
               color: "#292929",
               outline: "none",
+              cursor: "pointer",
+              appearance: "none" as const,
+              minWidth: "92px",
             }}
-          />
+          >
+            {COUNTRIES.map(c => (
+              <option key={c.code} value={c.code}>{c.flag} {c.code}</option>
+            ))}
+          </select>
+          <div style={{
+            position: "absolute", right: "8px", top: "50%",
+            transform: "translateY(-50%)", pointerEvents: "none",
+          }}>
+            <svg width="9" height="6" viewBox="0 0 9 6" fill="none">
+              <path d="M1 1L4.5 5L8 1" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
         </div>
-        {errors.phone && <span style={err}>{errors.phone}</span>}
-      </div>
-    );
-  };
 
+        {/* Number input */}
+        <input
+          type="text"
+          placeholder="7700 900000"
+          value={form.phone}
+          onChange={setPhone}
+          onFocus={fo("phone")}
+          onBlur={fb}
+          style={{
+            flex: 1,
+            height: "50px",
+            padding: "0 14px",
+            border: "none",
+            borderRadius: "0 4px 4px 0",
+            backgroundColor: "transparent",
+            fontFamily: "'Inter', sans-serif",
+            fontSize: "15px",
+            color: "#292929",
+            outline: "none",
+            caretColor: "#149AB5",  // cursor always visible
+            minWidth: 0,            // prevents flex overflow hiding caret
+          }}
+        />
+      </div>
+      {errors.phone && <span style={ERR}>{errors.phone}</span>}
+    </div>
+  );
+
+  // ── File upload ───────────────────────────────────────────────
+  // FIX 1: uses inputRef prop name (not fileRef) to avoid React conflicts
+  // The actual refs (passportRef, cvRef) are passed directly from parent scope
+  const FileUploadField = ({
+    label, value, inputRef, fieldKey, hint,
+  }: {
+    label: string;
+    value: File | null;
+    inputRef: React.RefObject<HTMLInputElement>;
+    fieldKey: keyof FormData;
+    hint?: string;
+  }) => (
+    <div style={FW}>
+      <label style={LABEL}>{label} <R /></label>
+      <div style={{
+        display: "flex",
+        height: "52px",
+        border: `1px solid ${errors[fieldKey as string] ? "#e53e3e" : "#e0e4ea"}`,
+        borderRadius: "4px",
+        backgroundColor: "#f5f7fa",
+        overflow: "hidden",
+      }}>
+        <span style={{
+          flex: 1, padding: "0 16px",
+          fontFamily: "'Inter',sans-serif", fontSize: "14px",
+          color: value ? "#292929" : "#9ca3af",
+          display: "flex", alignItems: "center",
+          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+        }}>
+          {value ? value.name : "No file chosen"}
+        </span>
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          style={{
+            padding: "0 18px", height: "100%",
+            backgroundColor: "#292929", color: "#fff",
+            border: "none", fontFamily: "'Inter',sans-serif",
+            fontSize: "14px", cursor: "pointer", flexShrink: 0,
+            whiteSpace: "nowrap",
+          }}
+        >
+          Choose File
+        </button>
+        <input
+          ref={inputRef}
+          type="file"
+          accept=".pdf"
+          style={{ display: "none" }}
+          onChange={e => set(fieldKey, e.target.files?.[0] || null)}
+        />
+      </div>
+      {hint && (
+        <p style={{
+          fontSize: "12px", color: "#64748b",
+          fontFamily: "'Inter',sans-serif",
+          lineHeight: "1.6em", marginTop: "7px",
+        }}>
+          {hint}
+        </p>
+      )}
+      {errors[fieldKey as string] && (
+        <span style={ERR}>{errors[fieldKey as string]}</span>
+      )}
+    </div>
+  );
+
+  // ── Render ────────────────────────────────────────────────────
   return (
     <section style={{ backgroundColor: "#ffffff", padding: "40px 20px 80px" }}>
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
 
-        {/* Intro text */}
+        {/* Intro */}
         <p style={{
-          fontFamily: "'Inter', sans-serif", fontSize: "16px", color: "#545454",
-          lineHeight: "1.7em", textAlign: "center", marginBottom: "40px",
+          fontFamily: "'Inter',sans-serif", fontSize: "16px",
+          color: "#545454", lineHeight: "1.7em",
+          textAlign: "center", marginBottom: "40px",
         }}>
           Seeking guidance on your higher education, or looking to secure your Masters at
           <br />a top university? Start your application today.
         </p>
 
-        {/* ── PROGRESS BAR — green circles ── */}
+        {/* ── Progress bar ── */}
         <div style={{ position: "relative", marginBottom: "48px" }}>
-          <div style={{ position: "absolute", top: "18px", left: "18px", right: "18px", height: "2px", backgroundColor: "#e0e0e0", zIndex: 0 }} />
-          <div style={{ position: "absolute", top: "18px", left: "18px", width: `${((step - 1) / 4) * 100}%`, height: "2px", backgroundColor: "#22c55e", zIndex: 1, transition: "width 0.4s ease" }} />
-          <div style={{ display: "flex", justifyContent: "space-between", position: "relative", zIndex: 2 }}>
+          <div style={{
+            position: "absolute", top: "18px", left: "18px", right: "18px",
+            height: "2px", backgroundColor: "#e5e7eb", zIndex: 0,
+          }} />
+          <div style={{
+            position: "absolute", top: "18px", left: "18px",
+            width: `${((step - 1) / 4) * 100}%`,
+            height: "2px", backgroundColor: "#22c55e",
+            zIndex: 1, transition: "width 0.4s ease",
+          }} />
+          <div style={{
+            display: "flex", justifyContent: "space-between",
+            position: "relative", zIndex: 2,
+          }}>
             {STEPS.map(s => {
               const done = s.number < step;
               const cur  = s.number === step;
@@ -348,13 +480,24 @@ export default function ApplicationForm() {
                   <div style={{
                     width: "36px", height: "36px", borderRadius: "50%",
                     backgroundColor: done || cur ? "#22c55e" : "#ffffff",
-                    border: `2px solid ${done || cur ? "#22c55e" : "#d0d0d0"}`,
+                    border: `2px solid ${done || cur ? "#22c55e" : "#d1d5db"}`,
                     display: "flex", alignItems: "center", justifyContent: "center",
                     transition: "all 0.3s",
+                    boxShadow: cur ? "0 0 0 4px rgba(34,197,94,0.15)" : "none",
                   }}>
                     {done
-                      ? <svg width="14" height="11" viewBox="0 0 14 11" fill="none"><path d="M1.5 5.5L5 9L12.5 1.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                      : <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "13px", fontWeight: "600", color: cur ? "#fff" : "#aaa" }}>{s.number}</span>
+                      ? (
+                        <svg width="14" height="11" viewBox="0 0 14 11" fill="none">
+                          <path d="M1.5 5.5L5 9L12.5 1.5" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      ) : (
+                        <span style={{
+                          fontFamily: "'Inter',sans-serif", fontSize: "13px",
+                          fontWeight: "600", color: cur ? "#fff" : "#9ca3af",
+                        }}>
+                          {s.number}
+                        </span>
+                      )
                     }
                   </div>
                 </div>
@@ -364,89 +507,92 @@ export default function ApplicationForm() {
         </div>
 
         {/* Step title */}
-        <h2 style={{ fontFamily: "'Work Sans',sans-serif", fontSize: "22px", fontWeight: "700", color: "#292929", marginBottom: "32px" }}>
+        <h2 style={{
+          fontFamily: "'Work Sans',sans-serif", fontSize: "22px",
+          fontWeight: "700", color: "#292929",
+          marginBottom: "32px", letterSpacing: "-0.01em",
+        }}>
           {STEPS[step - 1].title}
         </h2>
 
-        {/* ════════ STEP 1 — Applicant Details ════════ */}
+        {/* ════════════════════════════════════
+            STEP 1 — Applicant Details
+            Row 1: First name    | Last name
+            Row 2: Email         | Phone
+            Row 3: Date of birth | Student type
+            Row 4: Address       (full width)
+        ════════════════════════════════════ */}
         {step === 1 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
 
-            {/* ── Personal Information section ── */}
-            <div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-
-                <div style={row}>
-                  <div style={fw}>
-                    <label style={lbl}>First name <Req /></label>
-                    <input style={fi("firstName")} type="text" placeholder="Enter first name"
-                      value={form.firstName} onChange={e => set("firstName", e.target.value)}
-                      onFocus={() => setFocused("firstName")} onBlur={() => setFocused("")} />
-                    {errors.firstName && <span style={err}>{errors.firstName}</span>}
-                  </div>
-                  <div style={fw}>
-                    <label style={lbl}>Last name <Req /></label>
-                    <input style={fi("lastName")} type="text" placeholder="Enter last name"
-                      value={form.lastName} onChange={e => set("lastName", e.target.value)}
-                      onFocus={() => setFocused("lastName")} onBlur={() => setFocused("")} />
-                    {errors.lastName && <span style={err}>{errors.lastName}</span>}
-                  </div>
-                </div>
-
-                <div style={row}>
-                  <div style={fw}>
-                    <label style={lbl}>Email address <Req /></label>
-                    <input style={fi("email")} type="email" placeholder="Enter email address"
-                      value={form.email} onChange={e => set("email", e.target.value)}
-                      onFocus={() => setFocused("email")} onBlur={() => setFocused("")} />
-                    {errors.email && <span style={err}>{errors.email}</span>}
-                  </div>
-                  <div style={fw}>
-                    <label style={lbl}>Phone number <Req /></label>
-                    <PhoneField />
-                  </div>
-                </div>
-
-                <div style={{ ...row, gridTemplateColumns: "1fr" }}>
-                  <div style={fw}>
-                    <label style={lbl}>Date of birth <Req /></label>
-                    <input style={fi("dateOfBirth")} type="date" value={form.dateOfBirth}
-                      onChange={e => set("dateOfBirth", e.target.value)}
-                      onFocus={() => setFocused("dateOfBirth")} onBlur={() => setFocused("")} />
-                    {errors.dateOfBirth && <span style={err}>{errors.dateOfBirth}</span>}
-                  </div>
-                </div>
-
+            {/* Row 1 */}
+            <div style={ROW}>
+              <div style={FW}>
+                <label style={LABEL}>First name <R /></label>
+                <input
+                  style={si("firstName")}
+                  type="text"
+                  placeholder="Enter first name"
+                  value={form.firstName}
+                  onChange={setName("firstName")}
+                  onFocus={fo("firstName")}
+                  onBlur={fb}
+                />
+                {errors.firstName && <span style={ERR}>{errors.firstName}</span>}
+              </div>
+              <div style={FW}>
+                <label style={LABEL}>Last name <R /></label>
+                <input
+                  style={si("lastName")}
+                  type="text"
+                  placeholder="Enter last name"
+                  value={form.lastName}
+                  onChange={setName("lastName")}
+                  onFocus={fo("lastName")}
+                  onBlur={fb}
+                />
+                {errors.lastName && <span style={ERR}>{errors.lastName}</span>}
               </div>
             </div>
 
-            {/* ── Address Information section ── */}
-            <div>
-              <h3 style={secHead}>Address Information</h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-
-                <div style={fw}>
-                  <label style={lbl}>Address <Req /></label>
-                  <textarea
-                    style={{ ...fi("address"), minHeight: "80px", resize: "vertical" }}
-                    placeholder="Enter your address"
-                    value={form.address}
-                    onChange={e => set("address", e.target.value)}
-                    onFocus={() => setFocused("address")}
-                    onBlur={() => setFocused("")}
-                  />
-                  {errors.address && <span style={err}>{errors.address}</span>}
-                </div>
-
+            {/* Row 2 */}
+            <div style={ROW}>
+              <div style={FW}>
+                <label style={LABEL}>Email address <R /></label>
+                <input
+                  style={si("email")}
+                  type="email"
+                  placeholder="Enter email address"
+                  value={form.email}
+                  onChange={e => set("email", e.target.value)}
+                  onFocus={fo("email")}
+                  onBlur={fb}
+                />
+                {errors.email && <span style={ERR}>{errors.email}</span>}
+              </div>
+              <div style={FW}>
+                <label style={LABEL}>Phone number <R /></label>
+                <PhoneField />
               </div>
             </div>
 
-            {/* ── Other section ── */}
-            <div>
-              <h3 style={secHead}>Other</h3>
-              <div style={fw}>
-                <label style={lbl}>Student type <Req /></label>
-                <Sel value={form.studentType} onChange={v => set("studentType", v)} fieldName="studentType">
+            {/* Row 3 */}
+            <div style={ROW}>
+              <div style={FW}>
+                <label style={LABEL}>Date of birth <R /></label>
+                <input
+                  style={si("dateOfBirth")}
+                  type="date"
+                  value={form.dateOfBirth}
+                  onChange={e => set("dateOfBirth", e.target.value)}
+                  onFocus={fo("dateOfBirth")}
+                  onBlur={fb}
+                />
+                {errors.dateOfBirth && <span style={ERR}>{errors.dateOfBirth}</span>}
+              </div>
+              <div style={FW}>
+                <label style={LABEL}>Student type <R /></label>
+                <Sel name="studentType" value={form.studentType} onChange={v => set("studentType", v)}>
                   <option value="">Please select</option>
                   <option>UK Citizen</option>
                   <option>EU Citizen</option>
@@ -457,41 +603,62 @@ export default function ApplicationForm() {
               </div>
             </div>
 
+            {/* Row 4 — full width */}
+            <div style={FW}>
+              <label style={LABEL}>Address <R /></label>
+              <textarea
+                style={{
+                  ...si("address"),
+                  height: "120px",
+                  padding: "14px 16px",
+                  resize: "vertical" as const,
+                }}
+                placeholder="Enter your full address"
+                value={form.address}
+                onChange={e => set("address", e.target.value)}
+                onFocus={fo("address")}
+                onBlur={fb}
+              />
+              {errors.address && <span style={ERR}>{errors.address}</span>}
+            </div>
+
           </div>
         )}
 
         {/* ════════ STEP 2 — Education Records ════════ */}
         {step === 2 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            <h3 style={secHead}>Academic Background</h3>
-            <div style={row}>
-              <div style={fw}>
-                <label style={lbl}>School <Req /></label>
-                <input style={fi("school")} type="text" placeholder="Enter here"
+          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            <h3 style={SECTION}>Academic Background</h3>
+            <div style={ROW}>
+              <div style={FW}>
+                <label style={LABEL}>School <R /></label>
+                <input style={si("school")} type="text" placeholder="Name of school or college"
                   value={form.school} onChange={e => set("school", e.target.value)}
-                  onFocus={() => setFocused("school")} onBlur={() => setFocused("")} />
-                {errors.school && <span style={err}>{errors.school}</span>}
+                  onFocus={fo("school")} onBlur={fb} />
+                {errors.school && <span style={ERR}>{errors.school}</span>}
               </div>
-              <div style={fw}>
-                <label style={lbl}>Year of completion <Req /></label>
-                <input style={fi("yearOfCompletion")} type="text" placeholder="e.g. 2022"
-                  value={form.yearOfCompletion} onChange={e => set("yearOfCompletion", e.target.value)}
-                  onFocus={() => setFocused("yearOfCompletion")} onBlur={() => setFocused("")} />
-                {errors.yearOfCompletion && <span style={err}>{errors.yearOfCompletion}</span>}
+              <div style={FW}>
+                <label style={LABEL}>Year of completion <R /></label>
+                <input style={si("yearOfCompletion")} type="text" placeholder="e.g. 2022"
+                  value={form.yearOfCompletion}
+                  onChange={e => set("yearOfCompletion", e.target.value.replace(/\D/g, ""))}
+                  onFocus={fo("yearOfCompletion")} onBlur={fb} />
+                {errors.yearOfCompletion && <span style={ERR}>{errors.yearOfCompletion}</span>}
               </div>
             </div>
-            <div style={row}>
-              <div style={fw}>
-                <label style={lbl}>Highest qualification <Req /></label>
-                <input style={fi("highestQualification")} type="text"
+            <div style={ROW}>
+              <div style={FW}>
+                <label style={LABEL}>Highest qualification <R /></label>
+                <input style={si("highestQualification")} type="text"
                   placeholder="Highest qualification achieved or currently completing?"
-                  value={form.highestQualification} onChange={e => set("highestQualification", e.target.value)}
-                  onFocus={() => setFocused("highestQualification")} onBlur={() => setFocused("")} />
-                {errors.highestQualification && <span style={err}>{errors.highestQualification}</span>}
+                  value={form.highestQualification}
+                  onChange={e => set("highestQualification", e.target.value)}
+                  onFocus={fo("highestQualification")} onBlur={fb} />
+                {errors.highestQualification && <span style={ERR}>{errors.highestQualification}</span>}
               </div>
-              <div style={fw}>
-                <label style={lbl}>Current status <Req /></label>
-                <Sel value={form.currentStatus} onChange={v => set("currentStatus", v)} fieldName="currentStatus">
+              <div style={FW}>
+                <label style={LABEL}>Current status <R /></label>
+                <Sel name="currentStatus" value={form.currentStatus} onChange={v => set("currentStatus", v)}>
                   <option value="">Please select</option>
                   <option>Studying</option>
                   <option>Working</option>
@@ -504,12 +671,12 @@ export default function ApplicationForm() {
 
         {/* ════════ STEP 3 — Education Details ════════ */}
         {step === 3 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            <h3 style={secHead}>Study Preferences</h3>
-            <div style={row}>
-              <div style={fw}>
-                <label style={lbl}>Select area of study <Req /></label>
-                <Sel value={form.areaOfStudy} onChange={v => set("areaOfStudy", v)} fieldName="areaOfStudy">
+          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            <h3 style={SECTION}>Study Preferences</h3>
+            <div style={ROW}>
+              <div style={FW}>
+                <label style={LABEL}>Select area of study <R /></label>
+                <Sel name="areaOfStudy" value={form.areaOfStudy} onChange={v => set("areaOfStudy", v)}>
                   <option value="">Please select</option>
                   <option>Business & Administration</option>
                   <option>Computer Science & A.I.</option>
@@ -519,9 +686,9 @@ export default function ApplicationForm() {
                   <option>Media and Communication</option>
                 </Sel>
               </div>
-              <div style={fw}>
-                <label style={lbl}>Degree level <Req /></label>
-                <Sel value={form.degreeLevel} onChange={v => set("degreeLevel", v)} fieldName="degreeLevel">
+              <div style={FW}>
+                <label style={LABEL}>Degree level <R /></label>
+                <Sel name="degreeLevel" value={form.degreeLevel} onChange={v => set("degreeLevel", v)}>
                   <option value="">Please select</option>
                   <option>Bachelor&apos;s Degrees</option>
                   <option>Master&apos;s Degrees</option>
@@ -533,60 +700,29 @@ export default function ApplicationForm() {
         )}
 
         {/* ════════ STEP 4 — Documentation ════════ */}
+        {/* FIX 1: Using FileUploadField with inputRef prop (not fileRef) */}
         {step === 4 && (
           <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-            <h3 style={secHead}>Upload Documents</h3>
-            <div style={row}>
-
-              {/* Passport file upload */}
-              <div style={fw}>
-                <label style={lbl}>Upload passport or birth documentation <Req /></label>
-                <div style={{
-                  display: "flex", alignItems: "center",
-                  border: `1px solid ${errors.passportFile ? "#e53e3e" : "#dde1e7"}`,
-                  borderRadius: "4px", overflow: "hidden", backgroundColor: "#f4f6f8",
-                }}>
-                  <span style={{ flex: 1, padding: "13px 16px", fontFamily: "'Inter',sans-serif", fontSize: "14px", color: form.passportFile ? "#292929" : "#94a3b8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {form.passportFile ? form.passportFile.name : "No file chosen"}
-                  </span>
-                  <button onClick={() => passportRef.current?.click()} style={{ padding: "13px 18px", backgroundColor: "#292929", color: "#fff", border: "none", fontFamily: "'Inter',sans-serif", fontSize: "14px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>
-                    Choose File
-                  </button>
-                  <input ref={passportRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={e => set("passportFile", e.target.files?.[0] || null)} />
-                </div>
-                <p style={{ fontSize: "12px", color: "#64748b", fontFamily: "'Inter',sans-serif", lineHeight: "1.5em", marginTop: "6px" }}>
-                  Please upload a VERIFIED copy of your Passport or Birth Certificate. VERIFIED means the original document has been sighted & the copy dated and signed by an authorised person.
-                </p>
-                {errors.passportFile && <span style={err}>{errors.passportFile}</span>}
-              </div>
-
-              {/* CV file upload */}
-              <div style={fw}>
-                <label style={lbl}>Upload Curriculum Vitae (CV) or Resume <Req /></label>
-                <div style={{
-                  display: "flex", alignItems: "center",
-                  border: `1px solid ${errors.cvFile ? "#e53e3e" : "#dde1e7"}`,
-                  borderRadius: "4px", overflow: "hidden", backgroundColor: "#f4f6f8",
-                }}>
-                  <span style={{ flex: 1, padding: "13px 16px", fontFamily: "'Inter',sans-serif", fontSize: "14px", color: form.cvFile ? "#292929" : "#94a3b8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {form.cvFile ? form.cvFile.name : "No file chosen"}
-                  </span>
-                  <button onClick={() => cvRef.current?.click()} style={{ padding: "13px 18px", backgroundColor: "#292929", color: "#fff", border: "none", fontFamily: "'Inter',sans-serif", fontSize: "14px", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>
-                    Choose File
-                  </button>
-                  <input ref={cvRef} type="file" accept=".pdf" style={{ display: "none" }} onChange={e => set("cvFile", e.target.files?.[0] || null)} />
-                </div>
-                <p style={{ fontSize: "12px", color: "#64748b", fontFamily: "'Inter',sans-serif", lineHeight: "1.5em", marginTop: "6px" }}>
-                  Upload your CV or Resume in PDF format.
-                </p>
-                {errors.cvFile && <span style={err}>{errors.cvFile}</span>}
-              </div>
-
+            <h3 style={SECTION}>Upload Documents</h3>
+            <div style={ROW}>
+              <FileUploadField
+                label="Upload passport or birth documentation"
+                value={form.passportFile}
+                inputRef={passportRef}
+                fieldKey="passportFile"
+                hint="Please upload a VERIFIED copy of your Passport or Birth Certificate. VERIFIED means the original document has been sighted & the copy dated and signed by an authorised person."
+              />
+              <FileUploadField
+                label="Upload Curriculum Vitae (CV) or Resume"
+                value={form.cvFile}
+                inputRef={cvRef}
+                fieldKey="cvFile"
+                hint="Upload your CV or Resume in PDF format."
+              />
             </div>
-
-            <div style={{ maxWidth: "calc(50% - 10px)" }}>
-              <label style={lbl}>How did you find us? <Req /></label>
-              <Sel value={form.howDidYouFindUs} onChange={v => set("howDidYouFindUs", v)} fieldName="howDidYouFindUs">
+            <div style={{ maxWidth: "calc(50% - 12px)" }}>
+              <label style={LABEL}>How did you find us? <R /></label>
+              <Sel name="howDidYouFindUs" value={form.howDidYouFindUs} onChange={v => set("howDidYouFindUs", v)}>
                 <option value="">- Select -</option>
                 <option>Google</option>
                 <option>Facebook</option>
@@ -601,80 +737,131 @@ export default function ApplicationForm() {
         {/* ════════ STEP 5 — Declaration ════════ */}
         {step === 5 && (
           <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-            <h3 style={secHead}>Review & Submit</h3>
+            <h3 style={SECTION}>Review & Submit</h3>
 
-            {/* Summary */}
-            <div style={{ backgroundColor: "#f4f6f8", border: "1px solid #dde1e7", borderRadius: "6px", padding: "20px 24px", marginBottom: "4px" }}>
-              <p style={{ fontFamily: "'Work Sans',sans-serif", fontSize: "11px", fontWeight: "700", color: "#149AB5", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "14px" }}>
+            {/* Application summary */}
+            <div style={{
+              backgroundColor: "#f8fafc",
+              border: "1px solid #e5e7eb",
+              borderRadius: "6px",
+              padding: "20px 24px",
+            }}>
+              <p style={{
+                fontFamily: "'Work Sans',sans-serif", fontSize: "11px",
+                fontWeight: "700", color: "#149AB5",
+                letterSpacing: "3px", textTransform: "uppercase", marginBottom: "14px",
+              }}>
                 Application Summary
               </p>
               {[
-                { label: "Name",          value: `${form.firstName} ${form.lastName}` },
-                { label: "Email",         value: form.email },
-                { label: "Student Type",  value: form.studentType },
-                { label: "Area of Study", value: form.areaOfStudy },
-                { label: "Degree Level",  value: form.degreeLevel },
-              ].map(item => (
-                <div key={item.label} style={{ display: "flex", gap: "12px", marginBottom: "8px" }}>
-                  <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "13px", color: "#64748b", minWidth: "110px" }}>{item.label}:</span>
-                  <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "13px", color: "#292929", fontWeight: "500" }}>{item.value || "—"}</span>
+                { l: "Name",          v: `${form.firstName} ${form.lastName}` },
+                { l: "Email",         v: form.email },
+                { l: "Student Type",  v: form.studentType },
+                { l: "Area of Study", v: form.areaOfStudy },
+                { l: "Degree Level",  v: form.degreeLevel },
+              ].map(i => (
+                <div key={i.l} style={{ display: "flex", gap: "12px", marginBottom: "8px" }}>
+                  <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "13px", color: "#6b7280", minWidth: "110px" }}>{i.l}:</span>
+                  <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "13px", color: "#292929", fontWeight: "500" }}>{i.v || "—"}</span>
                 </div>
               ))}
             </div>
 
-            <div style={fw}>
-              <label style={lbl}>Application full name <Req /></label>
-              <input style={fi("fullName")} type="text" placeholder="Enter your full legal name"
-                value={form.fullName} onChange={e => set("fullName", e.target.value)}
-                onFocus={() => setFocused("fullName")} onBlur={() => setFocused("")} />
-              {errors.fullName && <span style={err}>{errors.fullName}</span>}
+            <div style={FW}>
+              <label style={LABEL}>Application full name <R /></label>
+              <input
+                style={si("fullName")}
+                type="text"
+                placeholder="Enter your full legal name"
+                value={form.fullName}
+                onChange={setName("fullName")}
+                onFocus={fo("fullName")}
+                onBlur={fb}
+              />
+              {errors.fullName && <span style={ERR}>{errors.fullName}</span>}
             </div>
 
-            <div style={fw}>
-              <label style={lbl}>Additional information</label>
-              <textarea style={{ ...fi("additionalInfo"), minHeight: "120px", resize: "vertical" }}
+            <div style={FW}>
+              <label style={LABEL}>Additional information</label>
+              <textarea
+                style={{
+                  ...si("additionalInfo"),
+                  height: "120px",
+                  padding: "14px 16px",
+                  resize: "vertical" as const,
+                }}
                 placeholder="Any additional information..."
-                value={form.additionalInfo} onChange={e => set("additionalInfo", e.target.value)}
-                onFocus={() => setFocused("additionalInfo")} onBlur={() => setFocused("")} />
+                value={form.additionalInfo}
+                onChange={e => set("additionalInfo", e.target.value)}
+                onFocus={fo("additionalInfo")}
+                onBlur={fb}
+              />
             </div>
 
-            {/* Privacy checkbox */}
-            <div style={{ backgroundColor: "#f4f6f8", border: "1px solid #dde1e7", borderRadius: "6px", padding: "18px 20px" }}>
-              <p style={{ fontFamily: "'Inter',sans-serif", fontSize: "14px", fontWeight: "500", color: "#292929", marginBottom: "10px" }}>
-                Privacy Policy Acceptance <Req />
+            <div style={{
+              backgroundColor: "#f8fafc",
+              border: "1px solid #e5e7eb",
+              borderRadius: "6px",
+              padding: "20px 24px",
+            }}>
+              <p style={{
+                fontFamily: "'Inter',sans-serif", fontSize: "14px",
+                fontWeight: "500", color: "#292929", marginBottom: "12px",
+              }}>
+                Privacy Policy Acceptance <R />
               </p>
               <label style={{ display: "flex", alignItems: "flex-start", gap: "10px", cursor: "pointer" }}>
-                <input type="checkbox" checked={form.privacyAccepted} onChange={e => set("privacyAccepted", e.target.checked)}
-                  style={{ width: "16px", height: "16px", marginTop: "2px", accentColor: "#149AB5", cursor: "pointer", flexShrink: 0 }} />
+                <input
+                  type="checkbox"
+                  checked={form.privacyAccepted}
+                  onChange={e => set("privacyAccepted", e.target.checked)}
+                  style={{
+                    width: "16px", height: "16px", marginTop: "2px",
+                    accentColor: "#149AB5", cursor: "pointer", flexShrink: 0,
+                  }}
+                />
                 <span style={{ fontFamily: "'Inter',sans-serif", fontSize: "14px", color: "#545454", lineHeight: "1.6em" }}>
                   By submitting this form, you agree to Prime Leed privacy notice.
                 </span>
               </label>
-              {errors.privacyAccepted && <span style={{ ...err, marginTop: "8px" }}>{errors.privacyAccepted}</span>}
+              {errors.privacyAccepted && (
+                <span style={{ ...ERR, marginTop: "8px" }}>{errors.privacyAccepted}</span>
+              )}
             </div>
           </div>
         )}
 
-        {/* ── Navigation Buttons ── */}
-        <div style={{ display: "flex", gap: "12px", marginTop: "36px", paddingTop: "24px", borderTop: "1px solid #f0f0f0" }}>
+        {/* ── Navigation buttons ── */}
+        <div style={{
+          display: "flex", gap: "12px", marginTop: "40px",
+          paddingTop: "24px", borderTop: "1px solid #f3f4f6",
+        }}>
           {step > 1 && (
-            <button onClick={prev} style={{ ...navBtn, backgroundColor: "#64748b" }}
-              onMouseEnter={e => (e.currentTarget.style.backgroundColor = "#475569")}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = "#64748b")}>
+            <button
+              onClick={prev}
+              style={{ ...BTN, backgroundColor: "#6b7280" }}
+              onMouseEnter={e => (e.currentTarget.style.backgroundColor = "#4b5563")}
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = "#6b7280")}
+            >
               Previous
             </button>
           )}
           {step < 5 ? (
-            <button onClick={next} style={navBtn}
+            <button
+              onClick={next}
+              style={BTN}
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = "#1a1a1a")}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = "#292929")}>
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = "#292929")}
+            >
               Next
             </button>
           ) : (
-            <button onClick={submit}
-              style={{ ...navBtn, backgroundColor: "#149AB5", display: "flex", alignItems: "center", gap: "10px" }}
+            <button
+              onClick={submit}
+              style={{ ...BTN, backgroundColor: "#149AB5" }}
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = "#117a8f")}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = "#149AB5")}>
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = "#149AB5")}
+            >
               Submit Application
               <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
                 <path d="M1 7H17M11 1L17 7L11 13" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
@@ -687,28 +874,71 @@ export default function ApplicationForm() {
 
       {/* ── Success Modal ── */}
       {submitted && (
-        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.55)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px" }}>
-          <div style={{ backgroundColor: "#ffffff", padding: "56px 48px", maxWidth: "460px", width: "100%", textAlign: "center", borderTop: "4px solid #149AB5", borderRadius: "8px", boxShadow: "0 24px 80px rgba(0,0,0,0.2)" }}>
-            <div style={{ width: "68px", height: "68px", borderRadius: "50%", backgroundColor: "#f0fdf4", border: "2px solid #22c55e", margin: "0 auto 24px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{
+          position: "fixed", inset: 0,
+          backgroundColor: "rgba(0,0,0,0.55)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          zIndex: 1000, padding: "20px",
+        }}>
+          <div style={{
+            backgroundColor: "#fff",
+            padding: "56px 48px",
+            maxWidth: "460px", width: "100%",
+            textAlign: "center",
+            borderTop: "4px solid #149AB5",
+            borderRadius: "8px",
+            boxShadow: "0 24px 80px rgba(0,0,0,0.2)",
+          }}>
+            <div style={{
+              width: "68px", height: "68px", borderRadius: "50%",
+              backgroundColor: "#f0fdf4", border: "2px solid #22c55e",
+              margin: "0 auto 24px",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
               <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
                 <path d="M2 11L10 19L26 2" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            <h2 style={{ fontFamily: "'Work Sans',sans-serif", fontSize: "24px", fontWeight: "800", color: "#292929", marginBottom: "12px" }}>
+
+            <h2 style={{
+              fontFamily: "'Work Sans',sans-serif", fontSize: "24px",
+              fontWeight: "800", color: "#292929", marginBottom: "12px",
+            }}>
               Application Submitted!
             </h2>
-            <p style={{ fontFamily: "'Inter',sans-serif", fontSize: "14px", color: "#545454", lineHeight: "1.7em", marginBottom: "28px" }}>
+
+            <p style={{
+              fontFamily: "'Inter',sans-serif", fontSize: "14px",
+              color: "#545454", lineHeight: "1.7em", marginBottom: "28px",
+            }}>
               Thank you, <strong>{form.firstName} {form.lastName}</strong>.<br />
-              Your application has been received. Our admissions team will get back to you within <strong>2 working days</strong>.
+              Our admissions team will get back to you within <strong>2 working days</strong>.
             </p>
-            <div style={{ backgroundColor: "#f4f6f8", padding: "14px 20px", marginBottom: "28px", borderRadius: "4px" }}>
-              <p style={{ fontSize: "11px", color: "#64748b", fontFamily: "'Inter',sans-serif", marginBottom: "4px", letterSpacing: "1px", textTransform: "uppercase" }}>Reference Number</p>
-              <p style={{ fontFamily: "'Work Sans',sans-serif", fontSize: "18px", fontWeight: "700", color: "#149AB5" }}>
-                PL-{Date.now().toString().slice(-6)}
+
+            {/* FIX 2: refNum generated once at submit — no hydration mismatch */}
+            <div style={{
+              backgroundColor: "#f8fafc", padding: "14px 20px",
+              marginBottom: "28px", borderRadius: "4px",
+            }}>
+              <p style={{
+                fontSize: "11px", color: "#6b7280",
+                fontFamily: "'Inter',sans-serif",
+                marginBottom: "4px", letterSpacing: "1px", textTransform: "uppercase",
+              }}>
+                Reference Number
+              </p>
+              <p style={{
+                fontFamily: "'Work Sans',sans-serif",
+                fontSize: "18px", fontWeight: "700", color: "#149AB5",
+              }}>
+                {refNum}
               </p>
             </div>
-            <button onClick={() => { setSubmitted(false); setStep(1); }}
-              style={{ ...navBtn, width: "100%", padding: "14px", backgroundColor: "#292929" }}>
+
+            <button
+              onClick={() => { setSubmitted(false); setStep(1); setRefNum(""); }}
+              style={{ ...BTN, width: "100%", justifyContent: "center" }}
+            >
               Close
             </button>
           </div>
