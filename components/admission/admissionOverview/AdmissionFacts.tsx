@@ -2,38 +2,37 @@
 
 "use client";
 
+import { useEffect, useRef } from "react";
+
 const stats = [
-  { number: "2500+", label: "REGISTERED\nSTUDENTS" },
-  { number: "500+",  label: "COURSES\nAVAILABLE" },
-  { number: "15+",   label: "PARTNERED\nINSTITUTIONS" },
-  { number: "2000+", label: "STUDENTS\nENROLLED" },
+  { number: "2500+", value: 2500, suffix: "+", label: "REGISTERED\nSTUDENTS" },
+  { number: "500+",  value: 500,  suffix: "+", label: "COURSES\nAVAILABLE" },
+  { number: "15+",   value: 15,   suffix: "+", label: "PARTNERED\nINSTITUTIONS" },
+  { number: "2000+", value: 2000, suffix: "+", label: "STUDENTS\nENROLLED" },
 ];
 
 const STYLES = `
   .af-outer {
-    position: relative;
-    /* White top 40%, dark bottom 60% — more dark area */
-    background: linear-gradient(
-      to bottom,
-      #ffffff 0%,
-      #ffffff 5%,
-      #2a2a2a 5%,
-      #2a2a2a 100%
-    );
-    padding-bottom: 120px;
-  }
+  position: relative;
+  background: linear-gradient(
+    to bottom,
+    #ffffff 0%,
+    #ffffff 15%,    /* ← was 5%, now 15% — more white at top */
+    #2a2a2a 15%,    /* ← was 5%, now 15% */
+    #2a2a2a 100%
+  );
+  padding-bottom: 120px;
+}
 
   .af-img-container {
-    position: relative;
-    /* Less side padding = wider image */
-    padding: 0 clamp(20px, 5vw, 100px);
-    z-index: 2;
-  }
+  position: relative;
+  padding: 0 clamp(100px, 30vw, 250px);  /* ← increase these values */
+  z-index: 2;
+}
 
   .af-img {
     display: block;
     width: 100%;
-    /* Taller image */
     height: clamp(320px, 40vw, 520px);
     object-fit: cover;
     object-position: center 30%;
@@ -41,7 +40,6 @@ const STYLES = `
     z-index: 2;
   }
 
-  /* FACTS sits at 40% — the white/dark boundary */
   .af-facts {
     position: absolute;
     left: 0;
@@ -59,7 +57,6 @@ const STYLES = `
     font-size: clamp(80px, 16vw, 190px);
   }
 
-  /* Stats row — more padding-top = more space below FACTS */
   .af-stats {
     position: relative;
     z-index: 2;
@@ -95,6 +92,7 @@ const STYLES = `
     }
   }
 
+  /* Number starts invisible and slightly down */
   .af-stat-num {
     font-family: 'Work Sans', sans-serif;
     font-weight: 800;
@@ -102,8 +100,24 @@ const STYLES = `
     font-size: clamp(36px, 5vw, 68px);
     line-height: 1em;
     margin: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
   }
 
+  /* When stats section is visible, number fades up */
+  .af-stats.af-counted .af-stat-num {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Stagger each stat */
+  .af-stats.af-counted .af-stat:nth-child(1) .af-stat-num { transition-delay: 0s;    }
+  .af-stats.af-counted .af-stat:nth-child(2) .af-stat-num { transition-delay: 0.15s; }
+  .af-stats.af-counted .af-stat:nth-child(3) .af-stat-num { transition-delay: 0.3s;  }
+  .af-stats.af-counted .af-stat:nth-child(4) .af-stat-num { transition-delay: 0.45s; }
+
+  /* Label also fades in with a slight delay after the number */
   .af-stat-lbl {
     font-family: 'Work Sans', sans-serif;
     font-weight: 600;
@@ -114,15 +128,89 @@ const STYLES = `
     margin: 0;
     text-transform: uppercase;
     white-space: pre-line;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
   }
+
+  .af-stats.af-counted .af-stat:nth-child(1) .af-stat-lbl { opacity: 1; transform: translateY(0); transition-delay: 0.1s;  }
+  .af-stats.af-counted .af-stat:nth-child(2) .af-stat-lbl { opacity: 1; transform: translateY(0); transition-delay: 0.25s; }
+  .af-stats.af-counted .af-stat:nth-child(3) .af-stat-lbl { opacity: 1; transform: translateY(0); transition-delay: 0.4s;  }
+  .af-stats.af-counted .af-stat:nth-child(4) .af-stat-lbl { opacity: 1; transform: translateY(0); transition-delay: 0.55s; }
 `;
 
+// Easing function — starts fast, slows down at the end
+// This makes the count feel natural, not mechanical
+function easeOutQuart(t: number): number {
+  return 1 - Math.pow(1 - t, 4);
+}
+
+// Animates a number from 0 to target over `duration` ms
+function animateCount(
+  el: HTMLElement,
+  target: number,
+  suffix: string,
+  duration: number
+) {
+  const start     = performance.now()
+  const formatter = new Intl.NumberFormat()   // adds commas: 2,500
+
+  const tick = (now: number) => {
+    const elapsed  = now - start
+    const progress = Math.min(elapsed / duration, 1)
+    const eased    = easeOutQuart(progress)
+    const current  = Math.round(eased * target)
+
+    el.textContent = formatter.format(current) + suffix
+
+    if (progress < 1) requestAnimationFrame(tick)
+  }
+
+  requestAnimationFrame(tick)
+}
+
 export default function AdmissionFacts() {
+  const statsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const statsEl = statsRef.current
+    if (!statsEl) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return
+
+          // Add class to trigger CSS fade-up animations
+          statsEl.classList.add("af-counted")
+
+          // Start counting animation on each number element
+          const numEls = statsEl.querySelectorAll<HTMLElement>(".af-stat-num")
+          numEls.forEach((el, i) => {
+            const stat = stats[i]
+            // Stagger start of each counter to match CSS delay
+            setTimeout(() => {
+              animateCount(el, stat.value, stat.suffix, 1800)
+            }, i * 150)
+          })
+
+          // Only run once
+          observer.unobserve(entry.target)
+        })
+      },
+      { threshold: 0.3 }
+    )
+
+    observer.observe(statsEl)
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <>
       <style>{STYLES}</style>
 
       <div className="af-outer">
+
         {/* Image */}
         <div className="af-img-container">
           <img
@@ -132,19 +220,21 @@ export default function AdmissionFacts() {
           />
         </div>
 
-        {/* FACTS — at the 40% boundary */}
+        {/* FACTS */}
         <h2 className="af-facts">FACTS</h2>
 
-        {/* Stats */}
-        <div className="af-stats">
+        {/* Stats — ref attached here so observer watches the whole row */}
+        <div className="af-stats" ref={statsRef}>
           {stats.map((stat) => (
-            <div key={stat.number} className="af-stat">
-              <p className="af-stat-num">{stat.number}</p>
+            <div key={stat.label} className="af-stat">
+              {/* data-value and data-suffix used by the counter */}
+              <p className="af-stat-num">0{stat.suffix}</p>
               <p className="af-stat-lbl">{stat.label}</p>
             </div>
           ))}
         </div>
+
       </div>
     </>
-  );
+  )
 }
