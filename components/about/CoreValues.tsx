@@ -1,3 +1,5 @@
+"use client";
+
 // components/about/CoreValues.tsx
 // FULLY RESPONSIVE — Mobile / Tablet / Laptop / TV
 //
@@ -6,6 +8,7 @@
 // Laptop  (1024px+) — wider spacing
 // TV      (1440px+) — max-width expanded
 
+import { useRef, useEffect } from "react";
 import { ClipboardList, MessageSquare, CalendarCheck, LucideIcon } from "lucide-react";
 import CoreValueCard from "./CoreValueCard";
 
@@ -126,11 +129,10 @@ export default function CoreValues({ introText }: CoreValuesProps) {
       <section className="cv-section">
         <div className="cv-container">
           <p className="cv-intro">
-            Aligned with global shifts in the economy, society, and environment,
-            our vision drives our mission and upholds our core values
+            {introText ?? "Aligned with global shifts in the economy, society, and environment, our vision drives our mission and upholds our core values"}
           </p>
 
-          <div className="cv-grid">
+          <div className="cv-grid" ref={gridRef}>
             {values.map((value, index) => (
               <div key={value.title} className="cv-cell">
                 <CoreValueCard

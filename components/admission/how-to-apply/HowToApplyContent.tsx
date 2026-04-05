@@ -81,7 +81,7 @@ export default function HowToApplyContent() {
     <section
       style={{
         backgroundColor: "#ffffff",
-        paddingTop: "80px",
+        paddingTop: "150px",
         paddingBottom: "100px",
         paddingLeft: "60px",
         paddingRight: "60px",
@@ -98,7 +98,7 @@ export default function HowToApplyContent() {
             color: "#1a1a1a",
             lineHeight: "1.7",
             textAlign: "justify",
-            marginBottom: "70px",
+            marginBottom: "100px",
           }}
         >
           To ensure you are well-prepared when filling out the application

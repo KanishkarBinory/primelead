@@ -443,14 +443,14 @@ export default function ApplicationForm() {
 
   // ── Render ────────────────────────────────────────────────────
   return (
-    <section style={{ backgroundColor: "#ffffff", padding: "40px 20px 80px" }}>
+    <section style={{ backgroundColor: "#ffffff", padding: "40px 20px 80px",paddingTop: "150px", }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
 
         {/* Intro */}
         <p style={{
-          fontFamily: "'Inter',sans-serif", fontSize: "16px",
-          color: "#545454", lineHeight: "1.7em",
-          textAlign: "center", marginBottom: "40px",
+          fontFamily: "'Inter',sans-serif", fontSize: "18px",
+          color: "#000000", lineHeight: "1.7em",
+          textAlign: "center", marginBottom: "40px",fontWeight: "400"
         }}>
           Seeking guidance on your higher education, or looking to secure your Masters at
           <br />a top university? Start your application today.
