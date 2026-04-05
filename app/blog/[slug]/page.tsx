@@ -4,6 +4,7 @@ import { getPostBySlug, getAllSlugs } from "@/lib/blogData";
 import BlogPost from "@/components/Blog/BlogPost";
 import FormOverlap from "@/components/FormOverlap";
 import CallToAction from "@/components/CallToAction";
+import AdmissionFormBanner from "@/components/about/AdmissionFormbanner";
 
 // generateStaticParams tells Next.js to pre-build pages for all
 // known slugs at build time rather than generating them on demand.
@@ -48,8 +49,9 @@ export default async function BlogPostPage({
   return (
     <main>
       <BlogPost post={post} />
-      <FormOverlap />
-      <CallToAction />
+      {/* <FormOverlap />
+      <CallToAction /> */}
+      <AdmissionFormBanner/>
     </main>
   );
 }

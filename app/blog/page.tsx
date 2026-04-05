@@ -7,13 +7,16 @@
 import BlogGrid    from "@/components/Blog/BlogGrid";
 import FormOverlap from "@/components/FormOverlap";
 import CallToAction from "@/components/CallToAction";
+import AdmissionFormBanner from "@/components/about/AdmissionFormbanner";
 
 export default function BlogPage() {
   return (
     <main>
       <BlogGrid />
-      <FormOverlap />
-      <CallToAction />
+      {/* <FormOverlap />
+      <CallToAction /> */}
+      <AdmissionFormBanner/>
+      
     </main>
   );
 }

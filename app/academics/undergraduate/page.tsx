@@ -3,6 +3,7 @@ import StatHero from "@/components/mainComponents/StatHero";
 import CallToAction from "@/components/home/CallToAction";
 import CoreValues from "@/components/about/CoreValues";
 import CourseSection from "@/components/mainComponents/CourseSection";
+import AdmissionFormBanner from "@/components/about/AdmissionFormbanner";
 
 export default function Undergraduate() {
   return (
@@ -55,7 +56,8 @@ export default function Undergraduate() {
         ]}
       />
       <CoreValues />
-      <CallToAction />
+      {/* <CallToAction /> */}
+      <AdmissionFormBanner/>
     </main>
   );
 }

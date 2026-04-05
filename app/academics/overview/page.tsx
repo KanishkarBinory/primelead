@@ -5,6 +5,7 @@ import GraduateAreas from "@/components/mainComponents/GraduateAreas";
 import FormOverlap from "@/components/FormOverlap";
 import CallToAction from "@/components/CallToAction";
 import ScatteredImages from "@/components/academics/ScatteredImages";
+import AdmissionFormBanner from "@/components/about/AdmissionFormbanner";
 
 export default function Overview() {
   return (
@@ -42,8 +43,9 @@ export default function Overview() {
           { src: "/Vission.jpeg", alt: "Vision" },
         ]}
       />
-      <FormOverlap />
-      <CallToAction />
+      {/* <FormOverlap />
+      <CallToAction /> */}
+      <AdmissionFormBanner/>
     </main>
   );
 }

@@ -9,6 +9,7 @@ import AidDetailSection, {
 } from "@/components/admission/financial-aid/AidDetailSection";
 import FormOverlap from "@/components/FormOverlap";
 import CallToAction from "@/components/CallToAction";
+import AdmissionFormBanner from "@/components/about/AdmissionFormbanner";
 
 export default function FinancialAidPage() {
   return (
@@ -20,8 +21,9 @@ export default function FinancialAidPage() {
       <AidDetailSection data={studentFinanceData} />
       <AidDetailSection data={grantsData} />
       <AidDetailSection data={bursariesData} />
-      <FormOverlap />
-      <CallToAction />
+      {/* <FormOverlap />
+      <CallToAction /> */}
+      <AdmissionFormBanner/>
     </main>
   );
 }

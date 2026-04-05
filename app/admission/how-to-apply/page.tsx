@@ -5,6 +5,7 @@ import FormOverlap from "@/components/FormOverlap";
 import HowToApplyContent from "@/components/admission/how-to-apply/HowToApplyContent";
 import CallToAction from "@/components/CallToAction";
 import PageHero from "@/components/admission/how-to-apply/htaHero";
+import AdmissionFormBanner from "@/components/about/AdmissionFormbanner";
 
 export default function HowToApplyPage() {
   return (
@@ -12,8 +13,9 @@ export default function HowToApplyPage() {
       {/* Page Hero — same teal box pattern */}
       <PageHero />
       <HowToApplyContent />
-      <FormOverlap />
-      <CallToAction />
+      {/* <FormOverlap />
+      <CallToAction /> */}
+       <AdmissionFormBanner/>
     </main>
   );
 }

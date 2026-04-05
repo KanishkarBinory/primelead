@@ -7,6 +7,7 @@ import AboutMissionVision from "@/components/about/AboutMissionVision"; // ← N
 import CoreValues from "@/components/about/CoreValues";
 import FormOverlap from "@/components/FormOverlap";
 import CallToAction from "@/components/CallToAction";
+import AdmissionFormBanner from "@/components/about/AdmissionFormbanner";
 
 export default function AboutPage() {
   return (
@@ -16,8 +17,9 @@ export default function AboutPage() {
       <StatsBanner />
       <AboutMissionVision /> {/* ← replaced VisionMission with this */}
       <CoreValues />
-      <FormOverlap />
-      <CallToAction />
+      <AdmissionFormBanner/>
+      {/* <FormOverlap />
+      <CallToAction /> */}
     </main>
   );
 }
