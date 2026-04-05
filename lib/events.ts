@@ -1,83 +1,3 @@
-// export type Event = {
-//   id: string;
-//   imageSrc: string;
-//   imageAlt: string;
-//   date: string;
-//   location: string;
-//   title: string;
-//   description: string;
-//   href: string;
-// };
-
-// export const EVENTS: Event[] = [
-//   {
-//     id: "1",
-//     imageSrc: "/Home_img.jpg",
-//     imageAlt: "Creative Writing Event",
-//     date: "March 12, 2021",
-//     location: "San Francisco",
-//     title: "ONLINE | Creative Writing Events",
-//     description:
-//       "For years, the archivists who run Special Collections have answered the same types as our collections...",
-//     href: "/events/creative-writing",
-//   },
-//   {
-//     id: "2",
-//     imageSrc: "/Home_img.jpg",
-//     imageAlt: "Literature Research Seminar",
-//     date: "April 19, 2021",
-//     location: "Los Angeles",
-//     title: "Modern and Contemporary Literature Research Seminar",
-//     description:
-//       "For years, the archivists who run Special Collections have answered the same types as our collections...",
-//     href: "/events/literature-seminar",
-//   },
-//   {
-//     id: "3",
-//     imageSrc: "/Home_img.jpg",
-//     imageAlt: "Combinatorial Theory Seminar",
-//     date: "June 24, 2021",
-//     location: "San Francisco",
-//     title: "Combinatorial Theory Seminar",
-//     description:
-//       "For years, the archivists who run Special Collections have answered the same typess as our collections…",
-//     href: "/events/literature-seminar",
-//   },
-//   {
-//     id: "4",
-//     imageSrc: "/Home_img.jpg",
-//     imageAlt: "Literature Research Seminar",
-//     date: "October 12, 2020",
-//     location: "Los Angeles",
-//     title: "Global and Imperial History Research Seminar",
-//     description:
-//       "For years, the archivists who run Special Collections have answered the same typess as our collections…",
-//     href: "/events/literature-seminar",
-//   },
-//   {
-//     id: "5",
-//     imageSrc: "/Home_img.jpg",
-//     imageAlt: "Literature Research Seminar",
-//     date: "October 12, 2020",
-//     location: "San Francisco",
-//     title: "ONLINE | Wellbeing Research Centre",
-//     description:
-//       "For years, the archivists who run Special Collections have answered the same typess as our collections…",
-//     href: "/events/literature-seminar",
-//   },
-//     {
-//     id: "6",
-//     imageSrc: "/Home_img.jpg",
-//     imageAlt: "Literature Research Seminar",
-//     date: "October 12, 2020",
-//     location: "Los Angeles",
-//     title: "ONLINE | Our global journalism seminar series",
-//     description:
-//       "For years, the archivists who run Special Collections have answered the same typess as our collections…",
-//     href: "/events/literature-seminar",
-//   },
-// ];
-
 export type Event = {
   id: string;
   slug: string;
@@ -95,13 +15,13 @@ export const EVENTS: Event[] = [
   {
     id: "1",
     slug: "creative-writing-events",
-    imageSrc: "/Home_img.jpg",
+    imageSrc: "/news1.jpg",
     imageAlt: "Creative Writing Event",
     date: "March 12, 2021",
     location: "San Francisco",
     title: "ONLINE | Creative Writing Events",
     description:
-      "Join us for an inspiring online creative writing event designed to help aspiring writers develop their craft and connect with like-minded individuals.",
+      "Join us for an inspiring online creative writing event designed to help aspiring writers develop their craft and connect with like-minded individuals...",
     body: `Creative writing is one of the most powerful tools for self-expression and communication. This online event brings together writers from all backgrounds to explore different forms of writing — from fiction and poetry to personal essays and screenwriting.
 
 Our experienced facilitators will guide participants through a series of interactive workshops, writing exercises, and group discussions. Whether you are a complete beginner or an experienced writer looking to refine your skills, this event has something for everyone.
@@ -116,13 +36,13 @@ All participants will receive access to exclusive writing resources, templates, 
   {
     id: "2",
     slug: "literature-research-seminar",
-    imageSrc: "/Home_img.jpg",
+    imageSrc: "/news2.jpg",
     imageAlt: "Literature Research Seminar",
     date: "April 19, 2021",
     location: "Los Angeles",
     title: "Modern and Contemporary Literature Research Seminar",
     description:
-      "An intensive research seminar exploring the landscape of modern and contemporary literature, designed for students and academics seeking deeper literary understanding.",
+      "For years, the archivists who run Special Collections have answered the same typess as our collections...",
     body: `This seminar offers a deep dive into the world of modern and contemporary literature, bringing together scholars, students, and literature enthusiasts for a day of academic exploration and intellectual discourse.
 
 The seminar is structured around three key themes: the evolution of narrative in the 21st century, the role of literature in shaping cultural identity, and emerging voices in global literature. Each theme will be explored through a combination of presentations, panel discussions, and small group workshops.
@@ -137,13 +57,13 @@ Attendees will also gain access to an exclusive online library of curated readin
   {
     id: "3",
     slug: "higher-education-funding-workshop",
-    imageSrc: "/Home_img.jpg",
+    imageSrc: "/news3.jpg",
     imageAlt: "Higher Education Funding Workshop",
-    date: "June 8, 2021",
-    location: "London",
-    title: "Higher Education Funding & Financial Aid Workshop",
+    date: "June 24, 2021",
+    location: "San Francisco",
+    title: "Combinatorial Theory Seminar",
     description:
-      "A practical workshop helping students and families navigate the complex landscape of higher education funding, student loans, and financial aid opportunities in the UK.",
+      "For years, the archivists who run Special Collections have answered the same typess as our collections...",
     body: `Understanding how to fund your higher education is one of the most important steps in your academic journey. This workshop is designed to demystify the process of applying for student finance, scholarships, and bursaries available to UK and EU students.
 
 Our team of financial aid experts will walk you through the entire Student Finance England application process step by step, ensuring you understand exactly what you are entitled to and how to maximise your funding. Topics covered include tuition fee loans, maintenance loans, grants, and the various repayment options available after graduation.
@@ -157,14 +77,56 @@ Participants will leave with a comprehensive funding guide, a personalised fundi
   },
   {
     id: "4",
-    slug: "university-application-masterclass",
-    imageSrc: "/Home_img.jpg",
-    imageAlt: "University Application Masterclass",
-    date: "September 15, 2021",
-    location: "Manchester",
-    title: "University Application Masterclass — UCAS & Beyond",
+    slug: "Global-and-Imperial-History-Research-Seminar",
+    imageSrc: "/news4.jpg",
+    imageAlt: "Global and Imperial History Research Seminar",
+    date: "Octorber 12, 2020",
+    location: "Los Angeles",
+    title: "Global and Imperial History Research Seminar",
     description:
-      "A comprehensive masterclass covering everything you need to know about the UCAS application process, personal statements, interviews, and securing your ideal university place.",
+      "A comprehensive masterclass covering everything you need to know about the UCAS application process, personal statements, interviews, and securing your ideal university place...",
+    body: `Applying to university can feel overwhelming, but with the right guidance and preparation, you can approach the process with confidence. This masterclass is designed to give you a complete understanding of the UCAS system and everything that happens after you submit your application.
+
+The session begins with a detailed walkthrough of the UCAS portal, covering how to choose your courses, write a compelling personal statement, and submit your application before key deadlines. Our admissions experts have reviewed thousands of applications and will share exactly what university admissions teams are looking for.
+
+A significant portion of the masterclass is dedicated to the personal statement — arguably the most important part of your application. You will learn how to structure your statement effectively, highlight your strengths and experiences, and avoid the most common mistakes that cause applications to be rejected.
+
+The masterclass also covers what happens after you submit your application, including how to respond to offers, navigate Clearing, and prepare for university interviews. Mock interview sessions will give participants the chance to practice their responses with experienced interviewers.
+
+Additional topics include how to choose between firm and insurance choices, understanding conditional and unconditional offers, and tips for those applying to competitive courses such as Medicine, Law, and Architecture. All participants receive a copy of our exclusive UCAS guide and personal statement workbook.`,
+    tags: ["UCAS", "Application", "Masterclass", "University"],
+  },
+  {
+    id: "5",
+    slug: "ONLINE-Wellbeing-Research-Centre",
+    imageSrc: "/news5.jpg",
+    imageAlt: "ONLINE | Wellbeing Research Centre",
+    date: "Octorber 12, 2020",
+    location: "San Francisco",
+    title: "ONLINE | Wellbeing Research Centre",
+    description:
+      "A comprehensive masterclass covering everything you need to know about the UCAS application process, personal statements, interviews, and securing your ideal university place...",
+    body: `Applying to university can feel overwhelming, but with the right guidance and preparation, you can approach the process with confidence. This masterclass is designed to give you a complete understanding of the UCAS system and everything that happens after you submit your application.
+
+The session begins with a detailed walkthrough of the UCAS portal, covering how to choose your courses, write a compelling personal statement, and submit your application before key deadlines. Our admissions experts have reviewed thousands of applications and will share exactly what university admissions teams are looking for.
+
+A significant portion of the masterclass is dedicated to the personal statement — arguably the most important part of your application. You will learn how to structure your statement effectively, highlight your strengths and experiences, and avoid the most common mistakes that cause applications to be rejected.
+
+The masterclass also covers what happens after you submit your application, including how to respond to offers, navigate Clearing, and prepare for university interviews. Mock interview sessions will give participants the chance to practice their responses with experienced interviewers.
+
+Additional topics include how to choose between firm and insurance choices, understanding conditional and unconditional offers, and tips for those applying to competitive courses such as Medicine, Law, and Architecture. All participants receive a copy of our exclusive UCAS guide and personal statement workbook.`,
+    tags: ["UCAS", "Application", "Masterclass", "University"],
+  },
+  {
+    id: "6",
+    slug: "Our-global-journalism-seminar-series",
+    imageSrc: "/news6.jpg",
+    imageAlt: "ONLINE | Wellbeing Research Centre",
+    date: "Octorber 12, 2020",
+    location: "Los Angeles",
+    title: "ONLINE | Our global journalism seminar series",
+    description:
+      "For years, the archivists who run Special Collections have answered the same typess as our collections...",
     body: `Applying to university can feel overwhelming, but with the right guidance and preparation, you can approach the process with confidence. This masterclass is designed to give you a complete understanding of the UCAS system and everything that happens after you submit your application.
 
 The session begins with a detailed walkthrough of the UCAS portal, covering how to choose your courses, write a compelling personal statement, and submit your application before key deadlines. Our admissions experts have reviewed thousands of applications and will share exactly what university admissions teams are looking for.

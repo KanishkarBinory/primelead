@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/mainComponents/Navbar";
 import Footer from "@/components/mainComponents/Footer";
+import FloatingContact from "@/components/mainComponents/Floatingcontact";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -21,6 +22,10 @@ export default function RootLayout({
         <Navbar />
         <main className="pt-17.5">
           {children}
+          <FloatingContact
+          whatsappNumber="94771234567"
+          messengerUsername="primeleed"
+        />
         </main>
         <Footer />
       </body>

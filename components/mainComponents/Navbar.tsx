@@ -534,7 +534,7 @@ export default function Navbar() {
               </svg>
             )}
           </button>
-          <button
+          {/* <button
             className="flex items-center justify-center w-10 h-10 bg-transparent border-none rounded cursor-pointer text-[#1a2e3b] hover:bg-[#f0f3f5] transition-colors"
             aria-label="Search"
           >
@@ -559,7 +559,7 @@ export default function Navbar() {
                 strokeLinecap="round"
               />
             </svg>
-          </button>
+          </button> */}
         </div>
 
         <MegaMenu open={megaOpen} onClose={closeAll} />
