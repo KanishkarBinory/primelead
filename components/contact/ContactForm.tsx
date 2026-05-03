@@ -105,7 +105,7 @@ export default function ContactForm() {
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!,
       );
 
-      router.push("/thank-you");
+      router.replace("/thank-you");
     } catch (error) {
       console.error("EmailJS error:", error);
       alert("Something went wrong. Please try again or contact us directly.");
