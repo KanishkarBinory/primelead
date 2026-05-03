@@ -4,27 +4,18 @@ import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-
-// Module-level flag — lives in memory, dies on refresh
-let canViewThankYou = false
-
-export function allowThankYouAccess() {
-  if (typeof window !== 'undefined') {
-    canViewThankYou = true
-  }
-}
+import { canAccessThankYou } from '@/lib/thankYouAccess'
 
 export default function ThankYouPage() {
   const router = useRouter()
   const overlayRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!canViewThankYou) {
+    if (!canAccessThankYou()) {
       router.replace('/')
       return
     }
 
-    // Hide overlay to reveal content
     if (overlayRef.current) {
       overlayRef.current.style.display = 'none'
     }
@@ -32,7 +23,6 @@ export default function ThankYouPage() {
 
   return (
     <>
-      {/* White overlay — covers page until check passes */}
       <div
         ref={overlayRef}
         style={{
@@ -43,12 +33,10 @@ export default function ThankYouPage() {
         }}
       />
 
-      {/* Thank you content */}
       <main
         className="min-h-screen flex items-center justify-center px-4 py-20"
         style={{ fontFamily: "'Google Sans Flex', 'Google Sans', sans-serif" }}
       >
-        {/* Background */}
         <div
           className="fixed inset-0 -z-10"
           style={{
@@ -61,7 +49,6 @@ export default function ThankYouPage() {
         />
 
         <div className="w-full max-w-2xl mx-auto text-center">
-          {/* Logo */}
           <div className="mb-12">
             <Link href="/">
               <Image
@@ -74,7 +61,6 @@ export default function ThankYouPage() {
             </Link>
           </div>
 
-          {/* Card */}
           <div
             style={{
               background: '#ffffff',
@@ -84,7 +70,6 @@ export default function ThankYouPage() {
               padding: '60px 48px',
             }}
           >
-            {/* Success Icon */}
             <div
               className="mx-auto mb-8 flex items-center justify-center"
               style={{
@@ -106,7 +91,6 @@ export default function ThankYouPage() {
               </svg>
             </div>
 
-            {/* Heading */}
             <h1
               style={{
                 fontSize: '36px',
@@ -145,10 +129,8 @@ export default function ThankYouPage() {
               In the meantime, feel free to explore more about our programmes.
             </p>
 
-            {/* Divider */}
             <div style={{ height: '1px', background: '#f0f4f7', margin: '0 0 40px' }} />
 
-            {/* Steps */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6" style={{ marginBottom: '40px' }}>
               {[
                 { step: '01', title: 'Review', desc: 'Our team reviews your enquiry carefully.' },
@@ -193,7 +175,6 @@ export default function ThankYouPage() {
               ))}
             </div>
 
-            {/* CTAs — no onClick needed, buttons work freely */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center mt-10">
               <Link
                 href="/"
@@ -218,7 +199,6 @@ export default function ThankYouPage() {
             </div>
           </div>
 
-          {/* Bottom note */}
           <p style={{ fontSize: '13px', color: '#9ca3af', marginTop: '28px' }}>
             Questions? Email us at{' '}
             <a href="mailto:info@primeleed.com" style={{ color: '#1a8fa8', fontWeight: 500 }}>

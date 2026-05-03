@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 import { ContactFormState, ContactFormErrors } from "./types";
 import { validate, ACADEMIC_LEVELS } from "./Validation";
-import { allowThankYouAccess } from "@/app/thank-you/page";
+import { allowThankYouAccess } from "@/lib/thankYouAccess"; 
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 

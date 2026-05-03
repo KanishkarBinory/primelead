@@ -8,7 +8,7 @@ import { isValidPhoneNumber } from "libphonenumber-js";
 import emailjs from "@emailjs/browser";
 import "react-phone-input-2/lib/style.css";
 import { useRouter } from "next/navigation";
-import { allowThankYouAccess } from "@/app/thank-you/page";
+import { allowThankYouAccess } from "@/lib/thankYouAccess";
 
 interface FormState {
   fullName: string;
