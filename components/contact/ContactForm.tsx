@@ -105,6 +105,12 @@ export default function ContactForm() {
         },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!,
       );
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "generate_lead",
+        event_category: "Contact Form",
+        event_label: "Form Submission",
+      });
       allowThankYouAccess();
       router.replace("/thank-you");
     } catch (error) {
