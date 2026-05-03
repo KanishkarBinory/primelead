@@ -8,6 +8,7 @@ import { isValidPhoneNumber } from "libphonenumber-js";
 import emailjs from "@emailjs/browser";
 import "react-phone-input-2/lib/style.css";
 import { useRouter } from "next/navigation";
+import { allowThankYouAccess } from "@/app/thank-you/page";
 
 interface FormState {
   fullName: string;
@@ -145,6 +146,7 @@ export function ContactSection() {
           process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!,
         );
 
+        allowThankYouAccess()
         router.replace("/thank-you");
       } catch (error) {
         console.error("EmailJS error:", error);

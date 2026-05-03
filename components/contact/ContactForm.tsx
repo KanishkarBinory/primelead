@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 
 import { ContactFormState, ContactFormErrors } from "./types";
 import { validate, ACADEMIC_LEVELS } from "./Validation";
+import { allowThankYouAccess } from "@/app/thank-you/page";
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -104,7 +105,7 @@ export default function ContactForm() {
         },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!,
       );
-
+      allowThankYouAccess();
       router.replace("/thank-you");
     } catch (error) {
       console.error("EmailJS error:", error);
