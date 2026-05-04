@@ -14,6 +14,21 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+
+  async redirects() {
+    return [
+      {
+        source: "/academics",
+        destination: "/academics/overview",
+        permanent: true,
+      },
+      {
+        source: "/apply-form",
+        destination: "/admission/how-to-apply",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
