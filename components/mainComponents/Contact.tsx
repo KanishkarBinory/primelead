@@ -49,8 +49,8 @@ const contactItems: Array<{
   },
   {
     icon: Mail,
-    text: "admissions@primeleed.co.uk",
-    href: "mailto:admissions@primeleed.co.uk",
+    text: "admissions@primeleed.com",
+    href: "mailto:admissions@primeleed.com",
     external: false,
   },
   {

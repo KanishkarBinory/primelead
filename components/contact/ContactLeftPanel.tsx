@@ -5,7 +5,7 @@ import UniCarousel from "@/components/contact/carosal";
 
 const CONTACT_DETAILS = [
   { Icon: Phone, text: "+44 (0) 20 1234 5678" },
-  { Icon: Mail, text: "admissions@primeleed.co.uk" },
+  { Icon: Mail, text: "admissions@primeleed.com" },
   { Icon: MapPin, text: "London, United Kingdom" },
 ];
 
