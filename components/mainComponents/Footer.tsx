@@ -66,10 +66,6 @@ export function Footer() {
       className="bg-[#105E74] text-white relative overflow-hidden"
       style={{ fontFamily: "'Google Sans Flex', sans-serif" }}
     >
-      <link
-        href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..900&display=swap"
-        rel="stylesheet"
-      />
 
       {/* Wave */}
       <div className="absolute top-0 left-0 right-0 w-full overflow-hidden leading-none">
@@ -86,7 +82,7 @@ export function Footer() {
         </svg>
       </div>
 
-      <div className="max-w-screen-xl mx-auto px-8 md:px-16 pt-20 pb-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-8 md:px-16 pt-20 pb-8 relative z-10">
         {/* TOP SECTION */}
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr_1fr_1fr_1.5fr_1fr] gap-x-12 gap-y-10 mb-12 items-start">
           {/* Col 1 — Brand */}
@@ -94,6 +90,7 @@ export function Footer() {
             <Link
               href="/"
               className="text-3xl font-serif font-bold text-white tracking-tight mb-5 block"
+              style={{ textDecoration: "none" }}
             >
               Primeleed<span className="text-[#38bdf8]">.</span>
             </Link>
@@ -107,21 +104,19 @@ export function Footer() {
             {/* Social Icons */}
             <div className="flex items-center gap-3 mb-6">
               {socialLinks.map(({ Icon, label, href }) => (
-                <Link
+                <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
                   className="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#38bdf8] transition-colors flex items-center justify-center text-white"
+                  style={{ textDecoration: "none" }}
                 >
                   <Icon size={16} />
-                </Link>
+                </a>
               ))}
             </div>
-
-            {/* Subscribe */}
-
           </div>
 
           {/* Col 2 — Quick Links */}
@@ -135,13 +130,14 @@ export function Footer() {
             <ul className="flex flex-col gap-3.5">
               {quickLinks.map(({ href, label }) => (
                 <li key={label}>
-                  <Link
+                  <a
                     href={href}
                     className="text-white hover:text-[#38bdf8] transition-colors flex items-center gap-2 text-sm"
+                    style={{ textDecoration: "none" }}
                   >
                     <span className="w-1 h-1 bg-[#38bdf8] rounded-full shrink-0" />
                     {label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -158,13 +154,14 @@ export function Footer() {
             <ul className="flex flex-col gap-3.5">
               {academicLinks.map(({ href, label }) => (
                 <li key={label}>
-                  <Link
+                  <a
                     href={href}
                     className="text-white hover:text-[#38bdf8] transition-colors flex items-center gap-2 text-sm"
+                    style={{ textDecoration: "none" }}
                   >
                     <span className="w-1 h-1 bg-[#38bdf8] rounded-full shrink-0" />
                     {label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -181,13 +178,14 @@ export function Footer() {
             <ul className="flex flex-col gap-3.5">
               {admissionLinks.map(({ href, label }) => (
                 <li key={label}>
-                  <Link
+                  <a
                     href={href}
                     className="text-white hover:text-[#38bdf8] transition-colors flex items-center gap-2 text-sm"
+                    style={{ textDecoration: "none" }}
                   >
                     <span className="w-1 h-1 bg-[#38bdf8] rounded-full shrink-0" />
                     {label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -211,33 +209,36 @@ export function Footer() {
                 </span>
               </li>
               <li>
-                <Link
+                <a
                   href="tel:02080043779"
                   className="flex items-center gap-3 text-white hover:text-[#38bdf8] transition-colors text-sm"
+                  style={{ textDecoration: "none" }}
                 >
                   <Phone size={15} className="shrink-0 text-[#38bdf8]" />
                   020 8004 3779
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   href="https://wa.me/447520604047"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 text-white hover:text-[#38bdf8] transition-colors text-sm"
+                  style={{ textDecoration: "none" }}
                 >
                   <SiWhatsapp size={15} className="shrink-0 text-[#38bdf8]" />
                   +44 7520 604047
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
+                <a
                   href="mailto:info@primeleed.com"
                   className="flex items-center gap-3 text-white hover:text-[#38bdf8] transition-colors text-sm"
+                  style={{ textDecoration: "none" }}
                 >
                   <Mail size={15} className="shrink-0 text-[#38bdf8]" />
                   info@primeleed.com
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -253,12 +254,13 @@ export function Footer() {
             <ul className="flex flex-col gap-3.5">
               {legalLinks.map(({ href, label }) => (
                 <li key={label}>
-                  <Link
+                  <a
                     href={href}
                     className="text-white hover:text-[#38bdf8] transition-colors whitespace-nowrap text-sm"
+                    style={{ textDecoration: "none" }}
                   >
                     {label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>

@@ -1,7 +1,6 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 const FONT = { fontFamily: "'Google Sans Flex', 'Google Sans', sans-serif" };
@@ -294,7 +293,9 @@ function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
 }
 
 export default function Navbar() {
-  const pathname = usePathname();
+  const [pathname] = useState(() =>
+    typeof window !== "undefined" ? window.location.pathname : "/"
+  );
   const [openItem, setOpenItem] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
